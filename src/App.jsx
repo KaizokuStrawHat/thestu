@@ -1,22 +1,32 @@
 import {useState} from 'react'
+import logo from './public/the-stu-logo.png'
+import DropdownButton from './components/DropdownButton';
 import './index.css'
 
 export default function App() {
-  const [isTopLeft, setIsTopLeft] = useState(false);
 
   return (
-    <div className="h-screen flex items-center justify-center bg-blue-200">
-      <h1 
-        onClick={() => setIsTopLeft(!isTopLeft)} 
-        className={`transition-all duration-1000 cursor-pointer
-                    font-family: DKC Forever 
-                    ${isTopLeft ? 'absolute top-0 left-0 m-4' : ''}`}
-      >
-        THE STU
-      </h1>
+    <div className="h-1/5 flex bg-yellow-800 gap-10">
+      <div>
+        <a><img src={logo} alt='Logo' className=''/></a>
+      </div>
+      <div className='flex gap-20 self-center ml-60'>   
+        <DropdownButton name={'PROGRAMS'} listOfLinks={['COMPETITIVE','NON-COMPETITIVE']} />
+        <button>SCHEDULE</button> 
+        <DropdownButton name={'BOOKING'} listOfLinks={['STUDIO RENTAL','PERFORMANCE']} />
+        <button>FACULTY</button>
+        <button>BOOKING</button>
+      </div>
+      {/* dropdown menu -- BOOKING: STUDIO,  */}
     </div>
   );
 }
+
+
+// onClick={() => setIsTopLeft(!isTopLeft)} 
+// className={`transition-all duration-1000 cursor-pointer
+//             font-family: DKC Forever 
+//             ${isTopLeft ? 'absolute top-0 left-0 m-4' : ''}`}
 
 /*
 
