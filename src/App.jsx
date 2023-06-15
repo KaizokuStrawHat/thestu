@@ -1,24 +1,10 @@
-import {useState} from 'react'
-import logo from './public/the-stu-logo.png'
-import DropdownButton from './components/DropdownButton';
+import Navbar from './components/Navbar';
 import './index.css'
 
 export default function App() {
 
   return (
-    <div className="h-1/5 flex bg-yellow-800 gap-10">
-      <div>
-        <a><img src={logo} alt='Logo' className=''/></a>
-      </div>
-      <div className='flex gap-20 self-center ml-60'>   
-        <DropdownButton name={'PROGRAMS'} listOfLinks={['COMPETITIVE','NON-COMPETITIVE']} />
-        <button>SCHEDULE</button> 
-        <DropdownButton name={'BOOKING'} listOfLinks={['STUDIO RENTAL','PERFORMANCE']} />
-        <button>FACULTY</button>
-        <button>BOOKING</button>
-      </div>
-      {/* dropdown menu -- BOOKING: STUDIO,  */}
-    </div>
+    <Navbar/>
   );
 }
 

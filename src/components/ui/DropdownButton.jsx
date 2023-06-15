@@ -1,5 +1,5 @@
 import { useState } from "react";
-import '../index.css';
+import '../../index.css';
 
 export default function DropdownButton({name, listOfLinks}){
     const [isOpen, setIsOpen] = useState(false)
@@ -10,14 +10,14 @@ export default function DropdownButton({name, listOfLinks}){
 
     return (
     <div>
-        <button className="font-mono" onClick={toggleDropdown}>
+        <button className="navbar-button" onClick={toggleDropdown}>
             {name}
         </button>
         {isOpen && (
         <div className="absolute flex flex-col bg-white-300 padding-2 mt-1.5 gap-1.5">
             {
                 listOfLinks.map((name, index) => (
-                    <a href='#' key={index} className="block font-sans">{name}</a>
+                    <a href='#' key={index} className="navbar-button block font-sans">{name}</a>
                 ))
             }
         </div>
