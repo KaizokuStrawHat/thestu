@@ -1,1 +1,1 @@
-A timetable project (combined soon with dashboard component )
+A timetable project (combined soon with dashboard component)
