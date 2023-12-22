@@ -1,0 +1,21 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+/* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap'); */
+
+.timetable {
+    display: grid;
+    grid-template-columns: repeat(13, minmax(0, 1fr));
+    grid-template-rows: repeat(15, minmax(0, 1fr));
+    gap: 1rem;
+    width: 100%;
+    height: 1600px;
+    background-color: #D1FAE5;
+}
+
+/*
+
+!! img size
+!! border
+!! rearrange the styles in code to avoid confusion	
+*/
