@@ -6,7 +6,7 @@ import { startOfWeek, format, addDays } from 'date-fns';
 import axios from 'axios';
 
 export default function Timetable({currentDate}){
-    const [weekSchedule, setWeekSchedule] = useState([])
+    const [weekSchedule, setWeekSchedule] = useState(false)
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     const times = ['12:00 PM', 
     '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', 
@@ -24,18 +24,17 @@ export default function Timetable({currentDate}){
             isFirstRender.current = false
             return
         }
-        
         // dates array will only have 7 items at a time
-        // display these as headers of the table (DATE - DAY)
-        // placeholder is for frontend
-        let startWeek = startOfWeek(currentDate);
-        // formattedDates is for backend
+        // placeholder is for frontend, display these as headers of the table (DATE - DAY)
         let placeholder = [];
+
+        // formattedDates is for backend
         let formattedDates = [];
+
         for (let i = 0; i <= 6; i++)
         {   
-            formattedDates.push(format(addDays(startWeek, i),'yyyy-MM-dd'))
-            placeholder.push(format(addDays(startWeek, i),'MMM d'))
+            formattedDates.push(format(addDays(startOfWeek(currentDate), i),'yyyy-MM-dd'))
+            placeholder.push(format(addDays(startOfWeek(currentDate), i),'MMM d'))
             setDates(placeholder)   
         };
 
@@ -43,39 +42,40 @@ export default function Timetable({currentDate}){
         const getTimeslots = async () => {
             try { 
                 let response = await axios.post('http://localhost:5000/timetable/testing-read', formattedDates) 
-                console.log(response.data)
                 setWeekSchedule(response.data)
             } catch (error) {
                 console.error('Error: ', error) 
             }
         };
+        
         getTimeslots();
     }, [currentDate])
 
     useEffect(() => {
-        console.log('weekSchedule:', weekSchedule)
-        if ((weekSchedule[0]))
-            console.log(weekSchedule[0].day)
+        if ((weekSchedule)){
+            console.log(weekSchedule)
+        }
+
         // I can't access any properties, they are all undefined it says
         // but if I console.log weekschedule[0] its not undefined?
     }, [weekSchedule])
 
-    const calculatePositionAndSize = (timeStart, timeEnd) => {
-        let timetableStart = 1100
-        let position = 0
-        while (timeStart != timetableStart)
-        {
-            if (timetableStart === 2400)
-                timetableStart = 100
-            else 
-                timetableStart += 100
-            position += 1
-        }
-        position *= 80
-        const size = ((timeEnd - timeStart) / 100) * 80
-        return { size, position }
+    const calculatePositionAndSize = (startTime, endTime) => {
+        // Constants for calculations
+        const pixelsPerHour = 80;  // For example, if each hour is represented by 80 pixels
+        const minutesPerHour = 60;
+        
+        // Convert times from HHMM to total minutes
+        const startTimeInMinutes = ((Math.floor(startTime / 100)) * minutesPerHour) + (startTime % 100);
+        const endTimeInMinutes = ((Math.floor(endTime / 100)) * minutesPerHour) + (endTime % 100);
+        const timetableStartInMinutes = 11 * minutesPerHour; // 1100 is 11 hours * 60 minutes
+        
+        // Calculate position and size in minutes, then convert to pixels
+        const position = (startTimeInMinutes - timetableStartInMinutes) * (pixelsPerHour / minutesPerHour);
+        const size = (endTimeInMinutes - startTimeInMinutes) * (pixelsPerHour / minutesPerHour);
+    
+        return { size, position };
     };
-
     
     return( 
         <>
@@ -94,29 +94,32 @@ export default function Timetable({currentDate}){
                             <span className='text-white'>{days[index]}</span>
                         </div>
                     ))}
-                    {Array.from({ length: 7 }).map((_, index) => (
-                            <div key={index} className="border-l-2 border-r-2 h-20 relative">
-                                <Column>
-                                    {weekSchedule[index] &&
-                                        weekSchedule[index].timeslots.map((timeslot, i) => {
-                                            const { size, position } = calculatePositionAndSize(
-                                            timeslot.startTime,
-                                            timeslot.endTime
-                                            );
-                                            return (
-                                            <Timeblock
-                                                key={timeslot.id}
-                                                teacher={timeslot.teacher}
-                                                category={timeslot.category}
-                                                startTime={timeslot.startTime}
-                                                endTime={timeslot.endTime}
-                                                size={size}
-                                                position={position}
-                                            />);
-                                        })
-                                    }
-                                </Column>
-                            </div>
+
+                    {weekSchedule &&
+                    // Ensure weekSchedule is initialized and mapped properly
+                    weekSchedule.map((schedule, i) => (
+                        // Consider a more stable key if possible
+                        <div key={i} className="border-l-2 border-r-2 h-20 relative"> 
+                            <Column>
+                                {
+                                // Use optional chaining to safely access timeslots
+                                schedule.timeslots?.map((timeslot, z) => {
+                                    const { size, position } = calculatePositionAndSize(timeslot.startTime, timeslot.endTime);
+                                    return (
+                                    <Timeblock
+                                        key={timeslot.id} // Ensure timeslot.id is unique and stable
+                                        teacher={timeslot.teacher}
+                                        category={timeslot.category}
+                                        startTime={timeslot.startTime}
+                                        endTime={timeslot.endTime}
+                                        size={size}
+                                        position={position}
+                                    />
+                                    );
+                                })
+                                }
+                            </Column>
+                        </div>
                     ))}
                     {Array.from({ length: 168 }).map((_, index) => (
                         (index >= 161) ? (
@@ -132,4 +135,4 @@ export default function Timetable({currentDate}){
             </div>
         </>
     )
-} 
+}

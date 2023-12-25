@@ -38,31 +38,52 @@ function getWeekDaysArray(date) {
   return weekDays;
 }
 
-async function checkTimeConflict(datesArray, startTime, endTime){
-  let errors = []
-  for (const date of datesArray) {
-    // Fetch all exiting timeslots associated with the date
+// Takes the start time, end time, and schedules
+// Returns schedules objects with new value property
+async function checkTimeConflict(schedulesArray, startTime, endTime){
+  return schedulesArray.map( async (schedule) => {
     let timeslots = await pool.query(`
       SELECT id, startTime, endTime FROM studiotimeslots
       WHERE studioday_id IN (SELECT id FROM studiodays WHERE date = $1);`,  
-      [date]
+      [schedule.date]
     );  
   
-    // Converting into military time integer data type
-    // Renaming the variable
+    // Converting into military time integer data type and renaming the variable
     let PendingStartTime = convertToMilitaryTime(startTime)
     let PendingEndTime = convertToMilitaryTime(endTime)
     for (let timeslot of timeslots.rows) {
       let ExistingTimeslotStart = timeslot.startTime;
       let ExistingTimeslotEnd = timeslot.endTime;
       if (ExistingTimeslotStart < PendingEndTime && PendingStartTime < ExistingTimeslotEnd) {
-        console.log(`REQUEST with ${date} HAS TIME CONFLICT WITH EXISTING TIMESLOT ID${timeslot.id}`)
-        errors.push(date)
+        console.log(`REQUEST with ${date.date} HAS TIME CONFLICT WITH EXISTING TIMESLOT ID${timeslot.id}`)
+        return {
+          ...schedule,
+          status: 'CONFLICT'
+        }
       }
+      else
+        return {
+          ...schedule,
+          status: 'SUCCESS'
+        }
     }
-  }
-  return errors
+  })
 }
+
+router.post('/testing-post2', async (req, res) => {
+  try {
+    const {
+      startTime = startTime,
+      endTime = endTime,
+      schedulesArray = schedulesArray
+    } = req.body
+    // if conflict exists, throw error and return the array of errors to frontend
+    let validatedSchedulesArray = await checkTimeConflict(schedulesArray, startTime, endTime)
+    res.json({validatedSchedulesArray})
+  } catch (error) {
+
+  }
+})
 
 router.post('/testing-post', async (req, res) => {
   try {
@@ -71,22 +92,14 @@ router.post('/testing-post', async (req, res) => {
         levelRadio: level,
         studioTextbox: studio,
         teacherTextbox1: teacher,
-        datesArray: datesArray, 
+        schedulesArray: schedulesArray, 
         startTimeTextbox: startTime,
         endTimeTextbox: endTime,
     } = req.body
 
     await pool.query('BEGIN')
-
-    // if conflict exists, throw error and return the array of errors to frontend
-    let errors = await checkTimeConflict(datesArray, startTime, endTime)
-    if (errors.length !== 0)
-    {
-      res.json({ error: 'CONFLICT DETECTED', errors})
-      throw new Error('CONFLICT DETECTED')
-    }
  
-    for (const date of datesArray) {  
+    for (const schedule of schedulesArray) {  
       // if date already exists, do nothing
       // if date does not exists, insert and fetch new record's id
       let studiodayResult = await pool.query(`
@@ -95,14 +108,14 @@ router.post('/testing-post', async (req, res) => {
         ON CONFLICT (date) 
         DO UPDATE SET date = EXCLUDED.date
         RETURNING id`,
-        [date, getDayOfWeek(date)]
+        [schedule.date, getDayOfWeek(schedule.date)]
       );
       
       let studiodayId = studiodayResult.rows[0].id;
   
       // Insert into studiotimeslots using the retrieved studiodayId
       await pool.query(`
-        INSERT INTO studiotimeslots (studioday_id, category, level, venue, startTime, endTime, teacher) 
+        INSERT INTO studiotimeslots (studioday_id, category, level, venue, "startTime", "endTime", teacher) 
         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;`, 
         [studiodayId, category, level, studio, convertToMilitaryTime(startTime), convertToMilitaryTime(endTime), teacher]
       );
@@ -125,7 +138,6 @@ router.post('/testing-post', async (req, res) => {
      
 router.post('/testing-read', async (req, res) => {
   try {
-
     const datesArray = req.body
     let weekSchedule = []
 

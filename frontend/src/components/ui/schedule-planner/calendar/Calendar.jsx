@@ -46,13 +46,13 @@ export default function Calendar({selectedDates, setSelectedDates, setPhase, for
             return newSelectedDates;
         });
 
-        let sortedDates = [...selectedDates].sort();
-        let result = sortedDates.map(date => (date));
+        let result = [...selectedDates].sort().map(date => ({date: date, status: ''}));
 
         setFormData(prevFormData => ({
             ...prevFormData,
-            datesArray: result
+            schedulesArray: result
         }))
+
         setPhase(3);
     }
 
