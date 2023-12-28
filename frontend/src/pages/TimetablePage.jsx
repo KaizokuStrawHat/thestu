@@ -20,6 +20,10 @@ export default function TimetablePage(){
     teacherTextbox: ''
   });
 
+  // useEffect(() => {
+  //   console.log(phase)
+  // }, [phase])
+
   return( 
       <>
         {(phase === 0 ) ? (
@@ -63,9 +67,9 @@ export default function TimetablePage(){
         ) : (phase === 3) ? (
           <>
             <ConfirmationFormsLayout 
-            formData={formData} 
+            formData={formData}
+            setFormData={setFormData}  
             setPhase={setPhase} 
-            setFormData={setFormData} 
             isOvernight={isOvernight}
             />
           </>

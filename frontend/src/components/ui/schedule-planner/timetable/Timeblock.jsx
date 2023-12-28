@@ -11,9 +11,12 @@ export default function Timeblock({teacher, category, startTime, endTime, size, 
     }
 
     return(
-        <div className={`w-full absolute bg-red-400 rounded border-blue-200 p-4`} style={{ height: `${size}px`, top: `${position}px` }}>
-            <p>{`${teacher} - ${category}`}</p>
-            <p>{`${convertToAmPm(startTime)} - ${convertToAmPm(endTime)}`}</p>
+        <div className={`w-full absolute bg-red-400 rounded border-blue-200`} style={{ height: `${size}px`, top: `${position}px` }}>
+            <div className='flex flex-wrap justify-between'>    
+                <div>{teacher}</div>
+                <p className='text-center'>{category}</p>
+            </div>
+            <div className='text-center'>{`${convertToAmPm(startTime)} - ${convertToAmPm(endTime)}`}</div>
         </div>
     )
 }

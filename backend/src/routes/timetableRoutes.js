@@ -19,74 +19,82 @@ function getDayOfWeek(dateString) {
   return date.toLocaleDateString('en-US', { weekday: 'long' });
 }
 
-function getWeekDaysArray(date) {
-  var currentDate = new Date(date);
-  var firstDay = new Date(currentDate);
-  firstDay.setDate(firstDay.getDate() - firstDay.getDay());
-  var weekDays = [];
-  function formatDate(date) {
-      var year = date.getFullYear();
-      var month = ('0' + (date.getMonth() + 1)).slice(-2); 
-      var day = ('0' + date.getDate()).slice(-2);
-      return `${year}-${month}-${day}`;
-  }
-  for (var i = 0; i < 7; i++) {
-      var day = new Date(firstDay);
-      day.setDate(day.getDate() + i);
-      weekDays.push(formatDate(day));
-  }
-  return weekDays;
-}
-
 // Takes the start time, end time, and schedules
 // Returns schedules objects with new value property
 async function checkTimeConflict(schedulesArray, startTime, endTime){
-  return schedulesArray.map( async (schedule) => {
+  const conflictsPromises = schedulesArray.map( async (schedule) => {
+    // Grab a studiotimeslots record with only id, startTime, endTime 
+    // with the same date
     let timeslots = await pool.query(`
-      SELECT id, startTime, endTime FROM studiotimeslots
+      SELECT id, "startTime", "endTime" FROM studiotimeslots
       WHERE studioday_id IN (SELECT id FROM studiodays WHERE date = $1);`,  
       [schedule.date]
     );  
-  
+
+    // If no timeslots exist on the same date, no conflict
+    if (timeslots.rows.length === 0){
+      console.log('Timeslots not found, returning success')
+      return {
+        ...schedule,
+        status: 'SUCCESS'
+      }
+    }
+
     // Converting into military time integer data type and renaming the variable
     let PendingStartTime = convertToMilitaryTime(startTime)
     let PendingEndTime = convertToMilitaryTime(endTime)
+
+
+    // For each timeslots in the same date, check time conflict
+    let conflictDetected = false;
     for (let timeslot of timeslots.rows) {
       let ExistingTimeslotStart = timeslot.startTime;
       let ExistingTimeslotEnd = timeslot.endTime;
-      if (ExistingTimeslotStart < PendingEndTime && PendingStartTime < ExistingTimeslotEnd) {
-        console.log(`REQUEST with ${date.date} HAS TIME CONFLICT WITH EXISTING TIMESLOT ID${timeslot.id}`)
-        return {
-          ...schedule,
-          status: 'CONFLICT'
-        }
+      console.log('ExistingTimeslotStart:', ExistingTimeslotStart,
+      'PendingEndTime:', PendingEndTime,
+      'PendingStartTime:', PendingStartTime,
+      'ExistingTimeslotEnd:', ExistingTimeslotEnd
+      )
+      if (ExistingTimeslotStart <= PendingEndTime && PendingStartTime <= ExistingTimeslotEnd) {
+        console.log(`TIME CONFLICT DETECTED: REQUEST with ${schedule.date} AND WITH EXISTING TIMESLOT ID${timeslot.id}`)
+        conflictDetected = true;
+        break;
       }
-      else
-        return {
-          ...schedule,
-          status: 'SUCCESS'
-        }
+    }
+
+    if (conflictDetected) {
+      return {
+        ...schedule,
+        status: 'CONFLICT'
+      }
+    } else {
+      return {
+        ...schedule,
+        status: 'SUCCESS'
+      }
     }
   })
+  return Promise.all(conflictsPromises);
 }
 
 router.post('/testing-post2', async (req, res) => {
   try {
     const {
-      startTime = startTime,
-      endTime = endTime,
-      schedulesArray = schedulesArray
+      startTimeTextbox: startTime,
+      endTimeTextbox: endTime,
+      schedulesArray: schedulesArray
     } = req.body
     // if conflict exists, throw error and return the array of errors to frontend
     let validatedSchedulesArray = await checkTimeConflict(schedulesArray, startTime, endTime)
-    res.json({validatedSchedulesArray})
+    // console.log('this is after the function:', validatedSchedulesArray)
+    res.json(validatedSchedulesArray)
   } catch (error) {
-
-  }
+    console.error(error)
+  }  
 })
 
 router.post('/testing-post', async (req, res) => {
-  try {
+  try { 
     const {
         categoryRadio: category,
         levelRadio: level,
@@ -134,8 +142,7 @@ router.post('/testing-post', async (req, res) => {
     console.error(err);
   }
 }); 
- 
-     
+   
 router.post('/testing-read', async (req, res) => {
   try {
     const datesArray = req.body
@@ -157,7 +164,6 @@ router.post('/testing-read', async (req, res) => {
         timeslots: timeslots
       });
     }
-    console.log(weekSchedule)
     res.json(weekSchedule);
   } catch (err) {
     console.error(err)

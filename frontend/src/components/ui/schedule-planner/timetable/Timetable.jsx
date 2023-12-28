@@ -61,18 +61,20 @@ export default function Timetable({currentDate}){
     }, [weekSchedule])
 
     const calculatePositionAndSize = (startTime, endTime) => {
-        // Constants for calculations
+        // Variables for calculations
         const pixelsPerHour = 80;  // For example, if each hour is represented by 80 pixels
         const minutesPerHour = 60;
+        let timeTableStart = 1100
         
-        // Convert times from HHMM to total minutes
+        // Convert from HHMM to total minutes
         const startTimeInMinutes = ((Math.floor(startTime / 100)) * minutesPerHour) + (startTime % 100);
         const endTimeInMinutes = ((Math.floor(endTime / 100)) * minutesPerHour) + (endTime % 100);
-        const timetableStartInMinutes = 11 * minutesPerHour; // 1100 is 11 hours * 60 minutes
+        const timetableStartInMinutes = ((Math.floor(timeTableStart / 100)) * minutesPerHour) + (timeTableStart % 100); // 1100 is 11 hours * 60 minutes
         
         // Calculate position and size in minutes, then convert to pixels
         const position = (startTimeInMinutes - timetableStartInMinutes) * (pixelsPerHour / minutesPerHour);
         const size = (endTimeInMinutes - startTimeInMinutes) * (pixelsPerHour / minutesPerHour);
+
     
         return { size, position };
     };
@@ -101,8 +103,7 @@ export default function Timetable({currentDate}){
                         // Consider a more stable key if possible
                         <div key={i} className="border-l-2 border-r-2 h-20 relative"> 
                             <Column>
-                                {
-                                // Use optional chaining to safely access timeslots
+                                {// Use optional chaining to safely access timeslots
                                 schedule.timeslots?.map((timeslot, z) => {
                                     const { size, position } = calculatePositionAndSize(timeslot.startTime, timeslot.endTime);
                                     return (

@@ -5,7 +5,7 @@ import { format, parse } from 'date-fns';
 export default function AddClassFormLayout({setPhase, setFormData, formData, setSelectedDates, setIsOvernight}){
     const [errors, setErrors] = useState({});
     const [canSubmit, setCanSubmit] = useState(false)
-    const didComponentMount = useRef(0) // In production, initialize this and the useEffect condition to 1
+    const didComponentMount = useRef(0) // In production, initialize this AND the useEffect condition to 1
     const [isStartTimeValid, setIsStartTimeValid] = useState(null)
     const [isEndTimeValid, setIsEndTimeValid] = useState(null)
     let startTimeFormatFlag = null
@@ -53,10 +53,30 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
     
     function handleChange(event) {
         const { name, value } = event.target;
+
+        // if timeFormatValid and name === startTime || name === endTime
+        // function(name)
+
+        // after finishing this code, make Calendar.jsx print the formData
+        // if this code is wrong, it may be due to timeFormatValid being a hook
+
         setFormData(prevFormData => ({
             ...prevFormData,
             [name]: value
         }))
+
+        // my plan is
+        // const startTime = new Date();
+        // futureTime.setHours  
+        // const endTime = new Date();
+
+
+        // I can keep the string/integer user input then just take them to set the Hours and Minutes.
+    }
+
+    function convertToDateObject(){
+        // Convert string input from user to javascript date object 
+        // For purpose of accessing 
     }
 
     function handleCancel(){
@@ -70,10 +90,12 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
         for (const [name, value] of entries) {
             let isValid = validateFilled(value)
             if (name === 'startTimeTextbox') {
+                // Validating format to 'hh:mm a' to ensure convertMilitaryTime function in timetableRoutes.js works as intended
                 startTimeFormatFlag = validateTimeFormat(value)
                 setIsStartTimeValid(startTimeFormatFlag)
             }
             else if (name === 'endTimeTextbox') {
+                // Validating format to 'hh:mm a' to ensure convertMilitaryTime function in timetableRoutes.js works as intended
                 endTimeFormatFlag = validateTimeFormat(value)
                 setIsEndTimeValid(endTimeFormatFlag)
             }
@@ -84,7 +106,7 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
         };
 
         hasErrorFlag = !Object.values(errors).some(error => error === true);
-        setIsOvernight(validateTimeRange(formData.startTimeTextbox, formData.endTimeTextbox))
+        setIsOvernight(!validateTimeRange(formData.startTimeTextbox, formData.endTimeTextbox))
 
         if (hasErrorFlag && startTimeFormatFlag && endTimeFormatFlag)
             setCanSubmit(true)
@@ -96,7 +118,6 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
         // didComponentMount exists for REACT STRICT MODE
         if (didComponentMount.current === 2) {
             if (canSubmit) {
-                console.log(formData)
                 setPhase(2)
             } 
         }
