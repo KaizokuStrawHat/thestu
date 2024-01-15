@@ -3,6 +3,7 @@ const cors = require('cors')
 const scheduleRoutes = require('./src/routes/scheduleRoutes.js')
 const dashboardRoutes = require('./src/routes/dashboardRoutes.js')
 const timetableRoutes = require('./src/routes/timetableRoutes.js')
+const confirmationRoutes = require('./src/routes/confirmationRoutes.js')
 
 const server = express();
 server.use(cors());
@@ -11,6 +12,7 @@ server.use(express.static('build'));
 server.use('/schedule', scheduleRoutes);
 server.use('/dashboard', dashboardRoutes);
 server.use('/timetable', timetableRoutes);
+server.use('/confirmation', confirmationRoutes);
 
 const PORT = 5000;
 

@@ -3,7 +3,6 @@ import { startOfMonth, setISODay, addMonths, subMonths, addWeeks, format } from 
 import DateButton from './DateButton';
 
 export default function Calendar({selectedDates, setSelectedDates, setPhase, formData, setFormData}){
-
     const [date, setDate] = useState(new Date());
     const firstDate = startOfMonth(date);
     const days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fri', 'Sat'];
@@ -46,7 +45,13 @@ export default function Calendar({selectedDates, setSelectedDates, setPhase, for
             return newSelectedDates;
         });
 
-        let result = [...selectedDates].sort().map(date => ({date: date, status: ''}));
+        // Initializing as objects to add 'status' property and have that as placeholder for front-end and will be filled with a value from './checkTimeConflict'.
+        // Sorting 'selectedDates' to ensure dates are rendered in an organized ascending order.
+        let result = [...selectedDates].sort().map(date => ({
+            date: date,
+            status: ''
+        }));
+
 
         setFormData(prevFormData => ({
             ...prevFormData,

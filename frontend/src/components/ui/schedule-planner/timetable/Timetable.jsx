@@ -38,10 +38,10 @@ export default function Timetable({currentDate}){
             setDates(placeholder)   
         };
 
-        // fetch schedules of one week
+        // Fetch schedules of one week
         const getTimeslots = async () => {
             try { 
-                let response = await axios.post('http://localhost:5000/timetable/testing-read', formattedDates) 
+                let response = await axios.post('http://localhost:5000/timetable/fetchOneWeek', formattedDates) 
                 setWeekSchedule(response.data)
             } catch (error) {
                 console.error('Error: ', error) 
@@ -55,12 +55,12 @@ export default function Timetable({currentDate}){
         if ((weekSchedule)){
             console.log(weekSchedule)
         }
-
-        // I can't access any properties, they are all undefined it says
-        // but if I console.log weekschedule[0] its not undefined?
     }, [weekSchedule])
 
     const calculatePositionAndSize = (startTime, endTime) => {
+        console.log('startTime:', startTime);
+        console.log('endTime:', endTime)
+
         // Variables for calculations
         const pixelsPerHour = 80;  // For example, if each hour is represented by 80 pixels
         const minutesPerHour = 60;

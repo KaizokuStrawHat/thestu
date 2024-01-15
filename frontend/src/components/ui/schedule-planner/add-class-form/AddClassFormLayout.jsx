@@ -23,12 +23,12 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
         }
     }
     
-    function convertTimeIntoInteger(value) {
+    function convertTimeIntoInteger(dateString) {
         try {
-            const parsedTime = parse(value, 'hh:mm a', new Date());
+            const parsedTime = parse(dateString, 'hh:mm a', new Date());
             const hours = parsedTime.getHours();
             const minutes = parsedTime.getMinutes();
-            const militaryTimeInteger = hours * 100 + minutes;
+            let militaryTimeInteger = hours * 100 + minutes;
             return militaryTimeInteger;
         } catch (error) {
             console.log(error)
@@ -43,9 +43,9 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
         // validate for teacher and studio, if that exists in the database
     }
 
-    function validateTimeRange(startTime, endTime){
+    function isOvernight(startTime, endTime){
         try {
-            return convertTimeIntoInteger(endTime) - convertTimeIntoInteger(startTime) > 0 
+            return convertTimeIntoInteger(endTime) - convertTimeIntoInteger(startTime) < 0 
         } catch (error) {
             return false
         }
@@ -53,25 +53,10 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
     
     function handleChange(event) {
         const { name, value } = event.target;
-
-        // if timeFormatValid and name === startTime || name === endTime
-        // function(name)
-
-        // after finishing this code, make Calendar.jsx print the formData
-        // if this code is wrong, it may be due to timeFormatValid being a hook
-
         setFormData(prevFormData => ({
             ...prevFormData,
             [name]: value
         }))
-
-        // my plan is
-        // const startTime = new Date();
-        // futureTime.setHours  
-        // const endTime = new Date();
-
-
-        // I can keep the string/integer user input then just take them to set the Hours and Minutes.
     }
 
     function convertToDateObject(){
@@ -106,7 +91,7 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
         };
 
         hasErrorFlag = !Object.values(errors).some(error => error === true);
-        setIsOvernight(!validateTimeRange(formData.startTimeTextbox, formData.endTimeTextbox))
+        setIsOvernight(isOvernight(formData.startTimeTextbox, formData.endTimeTextbox))
 
         if (hasErrorFlag && startTimeFormatFlag && endTimeFormatFlag)
             setCanSubmit(true)
