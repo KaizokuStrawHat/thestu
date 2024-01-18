@@ -2,22 +2,23 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { format, addDays } from 'date-fns';
 
-export default function ConfirmationFormsLayout({ setPhase }){
+export default function ConfirmationFormsLayout({ formData, setFormData, isOvernight, setPhase }){
 
-    let isOvernight = true;
-    const [formData, setFormData] = useState({
-        categoryRadio: 'Drop-In',
-        levelRadio: 'Intermediate',
-        studioTextbox: 'Studio C',
-        teacherTextbox1: 'Emilio',
-        startTimeTextbox: '6:00 PM',
-        endTimeTextbox: '5:59 PM',
-        schedulesArray: [   
-            { date: '2023-12-26'}, { date: '2023-12-29'}
-        ]
-    })
+    // let isOvernight = false;
+    // const [formData, setFormData] = useState({
+    //     categoryRadio: 'Drop-In',
+    //     levelRadio: 'Intermediate',
+    //     studioTextbox: 'Studio C',
+    //     teacherTextbox1: 'Emilio',
+    //     startTimeTextbox: '6:00 PM',
+    //     endTimeTextbox: '6:30 PM',
+    //     schedulesArray: [   
+    //         { date: '2023-12-26'}, { date: '2023-12-29'}, { date: '2023-01-19'}
+    //     ]
+    // })
 
     const [doesConflictExist, setDoesConflictExist] = useState(false);
+    const [NoSuccessExist, setNoSuccessExist] = useState(false);
 
     const postData = async (pendingData) => {
         try {
@@ -25,7 +26,7 @@ export default function ConfirmationFormsLayout({ setPhase }){
             const response = await axios.post('http://localhost:5000/confirmation/postNewClass', pendingData);
             console.log('Response from server:', response.data);
         } catch (error) {
-          console.error('Error:', error);
+            console.error('Error:', error);
         };
     };
 
@@ -45,7 +46,7 @@ export default function ConfirmationFormsLayout({ setPhase }){
                         return 1;
                     }
                 });
-            
+        
                 // Setting data for rendering and posting
                 setFormData({
                     ...formData,
@@ -55,6 +56,8 @@ export default function ConfirmationFormsLayout({ setPhase }){
                 // If conflict is detected, conditional rendering of <p> "Submitting will ignore dates with conflict status" </p>
                 if (validatedSchedules.data.filter(obj => obj.status === 'CONFLICT').length != 0)
                     setDoesConflictExist(true);
+                if (validatedSchedules.data.filter(obj => obj.status === 'SUCCESS').length === 0)
+                    setNoSuccessExist(true);
             } catch (error) {
                 console.error('Error:', error);
             };
@@ -182,7 +185,7 @@ export default function ConfirmationFormsLayout({ setPhase }){
                     </div> 
                 </div>
                 <div className="flex gap-4 mt-2 justify-end">
-                    <button className='bg-green-600 text-white p-4 rounded' onClick={() => handleSubmit()}>SUBMIT</button>
+                    <button className={`${NoSuccessExist ? 'bg-gray-500 text-gray-100' : 'bg-green-600 text-white'}  p-4 rounded`} onClick={() => handleSubmit()} disabled={NoSuccessExist}>SUBMIT</button>
                 </div>
             </div> 
         </div>

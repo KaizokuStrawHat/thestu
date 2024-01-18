@@ -8,9 +8,10 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
     const didComponentMount = useRef(0) // In production, initialize this AND the useEffect condition to 1
     const [isStartTimeValid, setIsStartTimeValid] = useState(null)
     const [isEndTimeValid, setIsEndTimeValid] = useState(null)
+    const [isSameTime, setIsSameTime] = useState(null)
     let startTimeFormatFlag = null
     let endTimeFormatFlag = null
-    let hasErrorFlag = null
+    let hasError = null
 
     function validateTimeFormat(value) {
         // Input must be h:mm a 
@@ -59,10 +60,12 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
         }))
     }
 
-    function convertToDateObject(){
-        // Convert string input from user to javascript date object 
-        // For purpose of accessing 
-    }
+    useEffect(() => {
+        setIsSameTime(formData.startTimeTextbox === formData.endTimeTextbox)
+    }, [formData])
+    useEffect(() => {
+        console.log(isSameTime)
+    }, [isSameTime])
 
     function handleCancel(){
         setSelectedDates([])
@@ -70,9 +73,8 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
     }
 
     function handleConfirm(e){
-        e.preventDefault()  
-        let entries = Object.entries(formData)
-        for (const [name, value] of entries) {
+        e.preventDefault();
+        for (const [name, value] of Object.entries(formData)) {
             let isValid = validateFilled(value)
             if (name === 'startTimeTextbox') {
                 // Validating format to 'hh:mm a' to ensure convertMilitaryTime function in timetableRoutes.js works as intended
@@ -90,12 +92,12 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
             }))
         };
 
-        hasErrorFlag = !Object.values(errors).some(error => error === true);
+        hasError = !Object.values(errors).some(error => error === true);
         setIsOvernight(isOvernight(formData.startTimeTextbox, formData.endTimeTextbox))
 
-        if (hasErrorFlag && startTimeFormatFlag && endTimeFormatFlag)
+        if (hasError && startTimeFormatFlag && endTimeFormatFlag && !isSameTime)
             setCanSubmit(true)
-        else if (!hasErrorFlag || !startTimeFormatFlag || !endTimeFormatFlag)
+        else if (!hasError || !startTimeFormatFlag || !endTimeFormatFlag || isSameTime)
             setCanSubmit(false)
     }
 
@@ -119,8 +121,9 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
                             <ClassForm 
                             handleChange={handleChange} 
                             errors={errors} 
-                            startTimeFormatFlag={isStartTimeValid}
-                            endTimeFormatFlag={isEndTimeValid} 
+                            sameTimeFlag={isSameTime}
+                            isStartTimeValid={isStartTimeValid}
+                            isEndTimeValid={isEndTimeValid} 
                             formData={formData}
                             />
                     </div>

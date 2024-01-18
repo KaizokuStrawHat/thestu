@@ -1,7 +1,6 @@
 import { format } from 'date-fns';
 
-export default function Timeblock({teacher, category, startTime, endTime, size, position}){
-
+export default function Timeblock({teacher, category, startTime, endTime, size, position, id, handleClick, toggleDelete}){
     function convertToAmPm(fourDigitTime) {
         const hours = Math.floor(fourDigitTime / 100);
         const minutes = fourDigitTime % 100;
@@ -11,12 +10,12 @@ export default function Timeblock({teacher, category, startTime, endTime, size, 
     }
 
     return(
-        <div className={`w-full absolute bg-red-400 rounded border-blue-200`} style={{ height: `${size}px`, top: `${position}px` }}>
-            <div className='flex flex-wrap justify-between'>    
-                <div>{teacher}</div>
+        <button className={`w-full absolute bg-red-400 rounded border-blue-200`} style={{ height: `${size}px`, top: `${position}px` }} onClick={() => handleClick(id)} disabled={!toggleDelete}>
+            <div>
+                <p>{teacher}</p>
                 <p className='text-center'>{category}</p>
+                <p className='text-center'>{`${convertToAmPm(startTime)} - ${convertToAmPm(endTime)}`}</p>
             </div>
-            <div className='text-center'>{`${convertToAmPm(startTime)} - ${convertToAmPm(endTime)}`}</div>
-        </div>
+        </button>
     )
 }

@@ -1,4 +1,6 @@
-export default function ClassForm({handleChange, errors, startTimeFormatFlag, endTimeFormatFlag, formData}){
+export default function ClassForm({handleChange, errors, isStartTimeValid, isEndTimeValid, formData, isSameTime}){
+    console.log('sametime:', isSameTime)
+    console.log('starttime:', isStartTimeValid)
     return(
         <>
             <div className={`${errors.categoryRadio ? 'border-red-500' : ''}`}>
@@ -56,7 +58,7 @@ export default function ClassForm({handleChange, errors, startTimeFormatFlag, en
                 {
                     (errors.startTimeTextbox) ? (
                         <p className="text-red-500">Start time is required</p>
-                    ) : (startTimeFormatFlag === false) ? (
+                    ) : (isStartTimeValid === false) ? (
                         <p className="text-red-500">Must use AM/PM format. (e.g '10:00 PM' or '12:00 AM')</p>
                     ) : (null)
                 }
@@ -73,7 +75,7 @@ export default function ClassForm({handleChange, errors, startTimeFormatFlag, en
                 {
                 (errors.endTimeTextbox) ? (
                     <p className="text-red-500">End time is required</p>
-                ) : (endTimeFormatFlag === false) ? (
+                ) : (isEndTimeValid === false) ? (
                     <p className="text-red-500">Must use AM/PM format. (e.g '10:00 PM' or '12:00 AM')</p>
                 ) : (null)
             }
@@ -89,7 +91,9 @@ export default function ClassForm({handleChange, errors, startTimeFormatFlag, en
                 />
                 {errors.teacherTextbox && <p className="text-red-500">Teacher is required.</p>}
             </label>
-
+            { isSameTime &&
+                <p className="col-start-1 col-span-3 text-center text-red-500">Start</p>
+            }
         </>
     )
 }
