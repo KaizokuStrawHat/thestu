@@ -264,7 +264,7 @@ router.post('/postNewClass', async (req, res) => {
           categoryRadio: category,
           levelRadio: level,
            studioTextbox: studio,
-          teacherTextbox1: teacher,
+          teacherTextbox: teacher,
           schedulesArray: schedulesArrays,    
           startTimeTextbox: startTime,
           endTimeTextbox: endTime,

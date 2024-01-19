@@ -28,7 +28,6 @@ router.post('/fetchOneWeek', async (req, res) => {
         timeslots: timeslots
       });
     }
-    console.log('weekschedule:', weekSchedule)    
     res.json(weekSchedule);
   } catch (err) {
     console.error(err)
@@ -37,34 +36,58 @@ router.post('/fetchOneWeek', async (req, res) => {
 
 async function deleteTimeslotAndAssociatedData(deletingTimeslotId) {
   try {
+    let deletingTimeslots_ids = [deletingTimeslotId]
+
     await pool.query('BEGIN');
 
-    // Find the deleting timeslot's studioday
-    let studioday_result = await pool.query(`
-      SELECT studioday_id FROM studiotimeslots WHERE id = $1`, 
+    // Retrieve result to see if deleting timeslot has pair
+    let pairs_results = await pool.query(`
+      SELECT * 
+      FROM overnightpairs 
+      WHERE studiotimeslot1_id = $1 OR studiotimeslot2_id = $1`,
       [deletingTimeslotId]
-    );
-    let deletingTimeslot_studiodayId = studioday_result.rows[0].studioday_id;
-    
+    )
 
-    // Delete the specified studiotimeslot record 
-    await pool.query(`
-      DELETE FROM studiotimeslots WHERE id = $1`, 
-      [deletingTimeslotId]
-    );
+    // Check if pair exists
+    if (pairs_results.rows.length !== 0) {
+      // Initialize
+      let studiotimeslot1_id = pairs_results.rows[0].studiotimeslot1_id;
+      let studiotimeslot2_id = pairs_results.rows[0].studiotimeslot2_id;
+      let overnightpair_id = pairs_results.rows[0].id;
 
-    // Check if there are any studiotimeslots using the deleted record's studioday
-    let studiotimeslot_result = await pool.query(`
-      SELECT id FROM studiotimeslots WHERE studioday_id = $1`,
-      [deletingTimeslot_studiodayId]
-    );
+      console.log('overnightpair_id:', overnightpair_id)
 
-    // Delete studioday if no studiotimeslots are no longer using it
-    if (studiotimeslot_result.rows.length === 0) 
       await pool.query(`
-      DELETE from studiodays WHERE id = $1`,
-      [deletingTimeslot_studiodayId]
-    );
+        DELETE FROM overnightpairs WHERE id = $1`, 
+        [overnightpair_id]
+      )
+      deletingTimeslots_ids = [studiotimeslot1_id, studiotimeslot2_id]
+    }
+
+    for (const id of deletingTimeslots_ids) {
+      // Retrieve the deleting studiotimeslot's studioday_id
+      let studioday_result = await pool.query(`
+        SELECT studioday_id FROM studiotimeslots WHERE id = $1`,  
+        [id]
+      )
+      let studioday_id = studioday_result.rows[0].studioday_id
+
+      // Delete studiotimeslot
+      await pool.query(`
+        DELETE FROM studiotimeslots WHERE id = $1`,
+        [id]
+      )
+
+      // Check if any studiotimeslot is the retrieved studioday, if not, delete
+      await pool.query(`
+        DELETE FROM studiodays
+        WHERE id = $1
+        AND NOT EXISTS (
+          SELECT 1 FROM studiotimeslots WHERE studioday_id = $1
+        )`,
+        [studioday_id]
+      )
+    }
 
     await pool.query('COMMIT');
   } catch (err) {

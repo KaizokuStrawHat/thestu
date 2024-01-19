@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { format, addDays } from 'date-fns';
 
-export default function ConfirmationFormsLayout({ formData, setFormData, isOvernight, setPhase }){
+export default function ConfirmationFormsLayout({ formData, setFormData, isOvernight, setPhase, setSubmitIsClicked }){
 
     // let isOvernight = false;
     // const [formData, setFormData] = useState({
@@ -112,9 +112,10 @@ export default function ConfirmationFormsLayout({ formData, setFormData, isOvern
             schedulesArray: pendingArray,
             isOvernight: isOvernight
         }
-        postData(pendingData)
 
-        // setPhase(0)
+        postData(pendingData)
+        setSubmitIsClicked(true)
+        setPhase(0)
     };
 
     // For increased readability
@@ -126,10 +127,6 @@ export default function ConfirmationFormsLayout({ formData, setFormData, isOvern
             return format(addDays(date, 1), 'MMMM d, yyyy');
         }
     };
-
-    useEffect(() => {
-        console.log(formData)
-    }, [formData])
 
     return(
         <div className="flex w-full justify-center items-center mb-4">
@@ -155,6 +152,14 @@ export default function ConfirmationFormsLayout({ formData, setFormData, isOvern
                         <h1 className="flex flex-col whitespace-nowrap">
                             <span className="font-bold">End Time: </span>
                             <span>{formData.endTimeTextbox}</span>
+                        </h1>
+                        <h1 className="flex flex-col whitespace-nowrap">
+                            <span className="font-bold">End Time: </span>
+                            <span>{formData.endTimeTextbox}</span>
+                        </h1>
+                        <h1 className="flex flex-col whitespace-nowrap">
+                            <span className="font-bold">Teacher: </span>
+                            <span>{formData.teacherTextbox}</span>
                         </h1>
                     </div>
                     <div className="flex flex-col w-[65%] border-4 border-gray-300 p-2">

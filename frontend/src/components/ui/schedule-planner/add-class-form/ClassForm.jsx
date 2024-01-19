@@ -1,6 +1,4 @@
 export default function ClassForm({handleChange, errors, isStartTimeValid, isEndTimeValid, formData, isSameTime}){
-    console.log('sametime:', isSameTime)
-    console.log('starttime:', isStartTimeValid)
     return(
         <>
             <div className={`${errors.categoryRadio ? 'border-red-500' : ''}`}>

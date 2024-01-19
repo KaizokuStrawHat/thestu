@@ -6,6 +6,7 @@ import ConfirmationFormsLayout from "../components/ui/schedule-planner/confirmat
 import AddTeacherFormLayout from "../components/ui/schedule-planner/AddTeacherFormLayout";
 
 export default function TimetablePage(){        
+  const [submitIsClicked, setSubmitIsClicked] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [phase, setPhase] = useState(0);
   const [selectedDates, setSelectedDates] = useState([]);
@@ -31,6 +32,8 @@ export default function TimetablePage(){
           currentDate={currentDate} 
           setCurrentDate={setCurrentDate}
           setPhase={setPhase}
+          submitIsClicked={submitIsClicked}
+          setSubmitIsClicked={setSubmitIsClicked}
           /> 
         </>
         ) : (phase === 1) ? (
@@ -59,6 +62,8 @@ export default function TimetablePage(){
             setFormData={setFormData}  
             setPhase={setPhase} 
             isOvernight={isOvernight}
+            phase={phase}
+            setSubmitIsClicked={setSubmitIsClicked}
             />
           </>
         ) : (phase === 4) ? (
