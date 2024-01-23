@@ -4,7 +4,8 @@ import Column from './Column'
 import Timeblock from "./Timeblock";
 import { startOfWeek, format, addDays } from 'date-fns';
 import axios from 'axios';
-import WeekRangePicker from '../WeekRangePicker';
+import WeekRangePicker from './WeekRangePicker';
+import StudioPicker from './StudioPicker';
 
 export default function Timetable({setPhase, setCurrentDate, currentDate, submitIsClicked, setSubmitIsClicked}){
     const [weekSchedule, setWeekSchedule] = useState(false)
@@ -91,9 +92,7 @@ export default function Timetable({setPhase, setCurrentDate, currentDate, submit
                 <div className="w-[39.5%]"></div>
                 <div className="w-[35.5%]">
                     <WeekRangePicker currentDate={currentDate} setCurrentDate={setCurrentDate}/>
-                    <div className="flex justify-center">
-                        <p> &lt; Studio A &gt;</p>
-                    </div>
+                    <StudioPicker />
                 </div>
                 <div className="flex items-right justify-end gap-2 w-[30%]">
                     <button className="bg-green-500 rounded p-2 text-white w-[9.7%]" onClick={() => setPhase(1)}>Create</button>

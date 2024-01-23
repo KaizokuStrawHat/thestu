@@ -19,7 +19,7 @@ export default function Calendar({selectedDates, setSelectedDates, setPhase, for
                 isCurrentMonth: setISODay(addWeeks(firstDate, i), z).getMonth() === date.getMonth()
             })
         }
-    }
+    };
     
     const handleDateClick = (buttonID) => {
         setSelectedDates(prevSelectedDates => {
@@ -45,7 +45,7 @@ export default function Calendar({selectedDates, setSelectedDates, setPhase, for
             return newSelectedDates;
         });
 
-        // Initializing as objects to add 'status' property and have that as placeholder for front-end and will be filled with a value from './checkTimeConflict'.
+        // Initializing as objects to add 'status' property and have that as placeholder for front-end and will be assigned a value from './checkTimeConflict'.
         // Sorting 'selectedDates' to ensure dates are rendered in an organized ascending order.
         let result = [...selectedDates].sort().map(date => ({
             date: date,
@@ -73,8 +73,8 @@ export default function Calendar({selectedDates, setSelectedDates, setPhase, for
                                 <button className='text-white ml-2'>{date.getFullYear()}</button>
                             </div>
                             <div className='flex gap-6 mr-2.5 mb-2'>
-                                <button className='w-[32px] h-[26px] py-[4px] rounded text-white' onClick={() => handleUpButton()}>&#8593;</button>
                                 <button className='w-[32px] h-[26px] py-[4px] rounded text-white' onClick={() => handleDownButton()}>&#8595;</button>
+                                <button className='w-[32px] h-[26px] py-[4px] rounded text-white' onClick={() => handleUpButton()}>&#8593;</button>
                             </div>
                         </div>
                         <div className='grid grid-rows-7 grid-cols-7 h-[90.5%] gap-2 place-items-center'>

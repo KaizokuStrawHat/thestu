@@ -61,13 +61,21 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
     }
 
     useEffect(() => {
-        setIsSameTime(formData.startTimeTextbox === formData.endTimeTextbox)
+        setIsSameTime(formData.startTime === formData.endTime)
     }, [formData])
     useEffect(() => {
         console.log(isSameTime)
     }, [isSameTime])
 
     function handleCancel(){
+        setFormData({
+            category: '',
+            level: '',
+            startTime: '',
+            endTime: '',
+            studio: '',
+            teacher: ''
+          })
         setSelectedDates([])
         setPhase(0)
     }
@@ -76,12 +84,12 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
         e.preventDefault();
         for (const [name, value] of Object.entries(formData)) {
             let isValid = validateFilled(value)
-            if (name === 'startTimeTextbox') {
+            if (name === 'startTime') {
                 // Validating format to 'hh:mm a' to ensure convertMilitaryTime function in timetableRoutes.js works as intended
                 startTimeFormatFlag = validateTimeFormat(value)
                 setIsStartTimeValid(startTimeFormatFlag)
             }
-            else if (name === 'endTimeTextbox') {
+            else if (name === 'endTime') {
                 // Validating format to 'hh:mm a' to ensure convertMilitaryTime function in timetableRoutes.js works as intended
                 endTimeFormatFlag = validateTimeFormat(value)
                 setIsEndTimeValid(endTimeFormatFlag)
@@ -93,7 +101,7 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
         };
 
         hasError = !Object.values(errors).some(error => error === true);
-        setIsOvernight(isOvernight(formData.startTimeTextbox, formData.endTimeTextbox))
+        setIsOvernight(isOvernight(formData.startTime, formData.endTime))
 
         if (hasError && startTimeFormatFlag && endTimeFormatFlag && !isSameTime)
             setCanSubmit(true)

@@ -11,14 +11,38 @@ export default function TimetablePage(){
   const [phase, setPhase] = useState(0);
   const [selectedDates, setSelectedDates] = useState([]);
   const [isOvernight, setIsOvernight] = useState(false);
+
   const [formData, setFormData] = useState({
-    categoryRadio: '',
-    levelRadio: '',
-    startTimeTextbox: '',
-    endTimeTextbox: '',
-    studioTextbox: '',
-    teacherTextbox: ''
+    category: '',
+    level: '',
+    startTime: '',
+    endTime: '',
+    studio: '',
+    teacher: ''
   });
+
+  // const [formData, setFormData] = useState({
+  //   category: "Drop-In",
+  //   level: "Advance",
+  //   startTime: "11:00 AM",
+  //   endTime: "12:00 PM",
+  //   studio: "Studio A",
+  //   teacher: "Teo",
+  //   schedulesArray: [
+  //     {
+  //         date: "2024-02-01",
+  //         status: ""
+  //     },
+  //     {
+  //         date: "2024-02-02",
+  //         status: ""
+  //     },
+  //     {
+  //         date: "2024-02-03",
+  //         status: ""
+  //     }
+  //   ]
+  // });
 
   // useEffect(() => {
   //   console.log(phase)
@@ -64,6 +88,7 @@ export default function TimetablePage(){
             isOvernight={isOvernight}
             phase={phase}
             setSubmitIsClicked={setSubmitIsClicked}
+            setSelectedDates={setSelectedDates}
             />
           </>
         ) : (phase === 4) ? (
@@ -72,8 +97,5 @@ export default function TimetablePage(){
           </>
         ) : null}
       </>
-      // <>
-      //   <ConfirmationFormsLayout />
-      // </>
     )
 }

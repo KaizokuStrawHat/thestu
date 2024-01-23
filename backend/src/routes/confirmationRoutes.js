@@ -99,32 +99,32 @@ async function checkTimeConflict(schedulesArray, startTime, endTime){
   
 router.post('/checkTimeConflict', async (req, res) => {
     try {
-      // The req.body has to be always an array, in order to check if the schedule is overnight
-      const formArray = req.body;
-  
-      let promises = formArray.map(async (form) => {
-        const { 
-          schedulesArray: schedulesArray, 
-          startTimeTextbox: startTime, 
-          endTimeTextbox: endTime
-        } = form;
-        return await checkTimeConflict(schedulesArray, startTime, endTime);
-      });
+        // The req.body has to be always an array, in order to check if the schedule is overnight
+        const formArray = req.body;
 
-      Promise.all(promises).then(placeholder => {
-        // If non-overnight
-        if (placeholder.length === 1) {
-          res.json(placeholder.flat())
-        }
-        // If overnight
-        else if (placeholder.length === 2) {
-          let result = mergeOvernightArrays(placeholder)
-          res.json(result)
-        } else
-          throw new Error ('Placeholder desired length is not attained')
-      }).catch(error => {
-        console.error("An error occurred: ", error);
-      });
+        let promises = formArray.map(async (form) => {
+            const { 
+                schedulesArray, 
+                startTime, 
+                endTime
+            } = form;
+            return await checkTimeConflict(schedulesArray, startTime, endTime);
+        });
+
+        Promise.all(promises).then(placeholder => {
+            // If non-overnight
+            if (placeholder.length === 1) {
+            res.json(placeholder.flat())
+            }
+            // If overnight
+            else if (placeholder.length === 2) {
+            let result = mergeOvernightArrays(placeholder)
+            res.json(result)
+            } else
+            throw new Error ('Placeholder desired length is not attained')
+        }).catch(error => {
+            console.error("An error occurred: ", error);
+        });
     } catch (error) {
       console.error(error);
       res.status(500).send('An error occurred');
@@ -261,13 +261,13 @@ router.post('/checkTimeConflict', async (req, res) => {
 router.post('/postNewClass', async (req, res) => {
     try { 
       const {
-          categoryRadio: category,
-          levelRadio: level,
-           studioTextbox: studio,
-          teacherTextbox: teacher,
+          category: category,
+          level: level,
+          studio: studio,
+          teacher: teacher,
           schedulesArray: schedulesArrays,    
-          startTimeTextbox: startTime,
-          endTimeTextbox: endTime,
+          startTime: startTime,
+          endTime: endTime,
           isOvernight: isOvernight,
       } = req.body
 

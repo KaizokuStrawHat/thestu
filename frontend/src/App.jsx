@@ -37,7 +37,7 @@ export default function App() {
 
   return (
     <>
-      <Routes>
+      {/* <Routes>
         <Route path="/" errorElement={<Error404 />} element={<MainLayout isViewPortBelow864={isViewPortBelow864} />}>
           <Route index element={<FrontPage />} />
           <Route path="home" element={<Home/>} />
@@ -49,6 +49,11 @@ export default function App() {
           <Route path="faculty" element={<Faculty />} />
           <Route path="contact" element={<Contact />} />
           <Route path="merch" element={<Merch />} />
+        </Route>
+      </Routes> */}
+      <Routes>
+        <Route path="/timetable" errorElement={<Error404 />} element={<MainLayout isViewPortBelow864={isViewPortBelow864} />}>
+          <Route index element={<TimetablePage />} />
         </Route>
       </Routes>
     </>

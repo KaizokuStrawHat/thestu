@@ -10,11 +10,11 @@ export default function Timeblock({teacher, category, startTime, endTime, size, 
     }
 
     return(
-        <button className={`w-full absolute bg-red-400 rounded border-blue-200`} style={{ height: `${size}px`, top: `${position}px` }} onClick={() => handleClick(id)} disabled={!toggleDelete}>
+        <button className={`w-full absolute bg-red-400 rounded border-blue-200 `} style={{ height: `${size}px`, top: `${position}px` }} onClick={() => handleClick(id)} disabled={!toggleDelete}>
             <div>
                 <p>{teacher}</p>
-                <p className='text-center'>{category}</p>
-                <p className='text-center'>{`${convertToAmPm(startTime)} - ${convertToAmPm(endTime)}`}</p>
+                <p>{category}</p>
+                <p>{`${convertToAmPm(startTime)} - ${convertToAmPm(endTime)}`}</p>
             </div>
         </button>
     )

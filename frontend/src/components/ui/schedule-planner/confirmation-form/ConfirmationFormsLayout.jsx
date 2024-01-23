@@ -2,24 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { format, addDays } from 'date-fns';
 
-export default function ConfirmationFormsLayout({ formData, setFormData, isOvernight, setPhase, setSubmitIsClicked }){
-
-    // let isOvernight = false;
-    // const [formData, setFormData] = useState({
-    //     categoryRadio: 'Drop-In',
-    //     levelRadio: 'Intermediate',
-    //     studioTextbox: 'Studio C',
-    //     teacherTextbox1: 'Emilio',
-    //     startTimeTextbox: '6:00 PM',
-    //     endTimeTextbox: '6:30 PM',
-    //     schedulesArray: [   
-    //         { date: '2023-12-26'}, { date: '2023-12-29'}, { date: '2023-01-19'}
-    //     ]
-    // })
-
+export default function ConfirmationFormsLayout({ formData, setFormData, isOvernight, setPhase, setSubmitIsClicked, setSelectedDates }){
     const [doesConflictExist, setDoesConflictExist] = useState(false);
     const [NoSuccessExist, setNoSuccessExist] = useState(false);
-
     const postData = async (pendingData) => {
         try {
             console.log('This is what you are trying to submit: ', pendingData)
@@ -34,8 +19,9 @@ export default function ConfirmationFormsLayout({ formData, setFormData, isOvern
     useEffect(() => {
         const validateDates = async (data) => {
             try {
-                const validatedSchedules = await axios.post('http://localhost:5000/confirmation/checkTimeConflict', data);
 
+                const validatedSchedules = await axios.post('http://localhost:5000/confirmation/checkTimeConflict', data);
+                console.log('validatedSchedules: ', validatedSchedules)
                 // Sorting
                 let sortedValidatedSchedules = validatedSchedules.data.sort((a, b) => {
                     if (a.status === b. status){
@@ -53,29 +39,32 @@ export default function ConfirmationFormsLayout({ formData, setFormData, isOvern
                     schedulesArray: sortedValidatedSchedules
                 });
 
-                // If conflict is detected, conditional rendering of <p> "Submitting will ignore dates with conflict status" </p>
-                if (validatedSchedules.data.filter(obj => obj.status === 'CONFLICT').length != 0)
+                // If conflict is detected, conditionally render <p> "Submitting will ignore dates with conflict status" </p>
+                if (validatedSchedules.data.filter(obj => obj.status === 'CONFLICT').length !== 0)
                     setDoesConflictExist(true);
-                if (validatedSchedules.data.filter(obj => obj.status === 'SUCCESS').length === 0)
+                // If no success is detected, disable submit button
+                if (validatedSchedules.data.filter(obj => obj.status === 'SUCCESS').length === 0) {
                     setNoSuccessExist(true);
+                }
             } catch (error) {
                 console.error('Error:', error);
+                // setNoSuccessExist(true);
             };
         };
 
         if (isOvernight) {
-            const currentDay = {
+            const modifiedFormData = {
                 ...formData,
-                endTimeTextbox: '11:59 PM'
+                endTime: '11:59 PM'
             }
-            const overNight = {
+            const modifiedFormData2 = {
                 ...formData,
-                startTimeTextbox: '12:00 AM',
+                startTime: '12:00 AM',
                 schedulesArray: formData.schedulesArray.map((schedule, index) => {
                     return { date: format(addDays(new Date(schedule.date), 2), 'yyyy-MM-dd')}
                 })
             }
-            validateDates([currentDay, overNight]);
+            validateDates([modifiedFormData, modifiedFormData2]);
         } else {
             validateDates([formData])
         }
@@ -115,6 +104,15 @@ export default function ConfirmationFormsLayout({ formData, setFormData, isOvern
 
         postData(pendingData)
         setSubmitIsClicked(true)
+        setFormData({
+            category: '',
+            level: '',
+            startTime: '',
+            endTime: '',
+            studio: '',
+            teacher: ''
+        })
+        setSelectedDates([])
         setPhase(0)
     };
 
@@ -135,31 +133,27 @@ export default function ConfirmationFormsLayout({ formData, setFormData, isOvern
                     <div className='w-[35%] grid grid-cols-3 grid-rows-3 gap-y-8 gap-x-20 p-6 rounded bg-yellow-700  text-white'> 
                         <h1 className="flex flex-col">
                                 <span className="font-bold">Category: </span>
-                            <span>{formData.categoryRadio} </span>
+                            <span>{formData.category} </span>
                         </h1>
                         <h1 className="flex flex-col">
                             <span className="font-bold">Level: </span> 
-                            <span>{formData.levelRadio}</span>
+                            <span>{formData.level}</span>
                         </h1>
                         <h1 className="flex flex-col">
                             <span className="font-bold">Studio: </span> 
-                            <span>{formData.studioTextbox}</span>
+                            <span>{formData.studio}</span>
                         </h1>
                         <h1 className="flex flex-col whitespace-nowrap">
                             <span className="font-bold">Start Time: </span>
-                            <span>{formData.startTimeTextbox}</span>
+                            <span>{formData.startTime}</span>
                         </h1>
                         <h1 className="flex flex-col whitespace-nowrap">
                             <span className="font-bold">End Time: </span>
-                            <span>{formData.endTimeTextbox}</span>
-                        </h1>
-                        <h1 className="flex flex-col whitespace-nowrap">
-                            <span className="font-bold">End Time: </span>
-                            <span>{formData.endTimeTextbox}</span>
+                            <span>{formData.endTime}</span>
                         </h1>
                         <h1 className="flex flex-col whitespace-nowrap">
                             <span className="font-bold">Teacher: </span>
-                            <span>{formData.teacherTextbox}</span>
+                            <span>{formData.teacher}</span>
                         </h1>
                     </div>
                     <div className="flex flex-col w-[65%] border-4 border-gray-300 p-2">

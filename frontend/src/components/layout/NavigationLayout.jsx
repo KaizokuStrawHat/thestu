@@ -16,7 +16,7 @@ export default function NavigationLayout(){
                 <NavLink name={'FACULTY'} />
                 <NavLink name={'CONTACT'} />
                 <NavLink name={'MERCH'} />
-                <NavLink name={'TIMETABLE'} route={'/timetable'}/>
+                <NavLink name={'TIMETABLE'} />
             </div>
         </>
     )
