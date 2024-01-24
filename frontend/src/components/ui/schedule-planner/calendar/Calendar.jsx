@@ -98,7 +98,7 @@ export default function Calendar({selectedDates, setSelectedDates, setPhase, for
                 </div>
                 <div className="flex gap-4 justify-between mt-4">
                     <button className="bg-red-600 p-4 rounded text-white" onClick={() => setPhase(1)}>BACK</button>
-                    <button className="bg-green-600 p-4 rounded text-white" onClick={() => handleConfirmClick()}>CONFIRM</button>
+                    <button className={`${selectedDates.length === 0 ? 'bg-gray-500 text-gray-100' : 'bg-green-600 text-white'}  p-4 rounded`} onClick={() => handleConfirmClick()} disabled={selectedDates.length === 0}>CONFIRM</button>
                 </div>
             </div>
         </div>

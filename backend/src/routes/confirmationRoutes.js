@@ -41,7 +41,7 @@ function mergeOvernightArrays(schedulesArray) {
 
 // Takes the start time, end time, and schedules
 // Returns schedules objects with new value property
-async function checkTimeConflict(schedulesArray, startTime, endTime){
+async function checkTimeConflict(schedulesArray, startTime, endTime){   
     const conflictsPromises = schedulesArray.map( async (schedule, iteration) => {
       // Grab a studiotimeslots record with only id, startTime, endTime with the same date
       let timeslots = await pool.query(`
@@ -49,8 +49,6 @@ async function checkTimeConflict(schedulesArray, startTime, endTime){
         WHERE studioday_id IN (SELECT id FROM studiodays WHERE date = $1);`,  
         [schedule.date]
       );  
-  
-    //   console.log(`iteration ${iteration}:${JSON.stringify(timeslots.rows[0])}`)
 
       // If no timeslots exist on the same date, no conflict
       if (timeslots.rows.length === 0){
@@ -70,11 +68,6 @@ async function checkTimeConflict(schedulesArray, startTime, endTime){
       for (let timeslot of timeslots.rows) {
         let ExistingTimeslotStart = timeslot.startTime;
         let ExistingTimeslotEnd = timeslot.endTime;
-        console.log('ExistingTimeslotStart:', ExistingTimeslotStart,
-        'PendingEndTime:', PendingEndTime,
-        'PendingStartTime:', PendingStartTime,
-        'ExistingTimeslotEnd:', ExistingTimeslotEnd
-        )
         if (ExistingTimeslotStart <= PendingEndTime && PendingStartTime <= ExistingTimeslotEnd) {
           console.log(`TIME CONFLICT DETECTED: REQUEST with ${schedule.date} AND WITH EXISTING TIMESLOT ID${timeslot.id}`)
           conflictDetected = true;
@@ -131,144 +124,17 @@ router.post('/checkTimeConflict', async (req, res) => {
     }  
 })
   
-// async function postNewClass({
-//     categoryRadio: category, 
-//     levelRadio: level, 
-//     studioTextbox: studio, 
-//     teacherTextbox1: teacher, 
-//     startTimeTextbox: startTime, 
-//     endTimeTextbox: endTime,
-//     schedulesArray,
-//     isOvernight
-// }) {
-  
-//     // console.log('category:', category);
-//     // console.log('level:', level);
-//     // console.log('studio:', studio);
-//     // console.log('teacher:', teacher);
-//     // console.log('startTime:', startTime);
-//     // console.log('endTime:', endTime);
-//     // console.log('schedulesArray:', schedulesArray);
-  
-//     for (const schedule of schedulesArray) {  
-//       // if date already exists, do nothing
-//       // if date does not exists, insert and fetch new record's id
-//       let studiodayResult = await pool.query(`
-//         INSERT INTO studiodays(date, day) 
-//         VALUES ($1, $2)
-//         ON CONFLICT (date) 
-//         DO UPDATE SET date = EXCLUDED.date
-//         RETURNING id`,
-//         [schedule.date, getDayOfWeek(schedule.date)]
-//       );
-      
-//       let studiodayId = studiodayResult.rows[0].id;
-  
-//       // Insert into studiotimeslots using the retrieved studiodayId
-//       await pool.query(`
-//         INSERT INTO studiotimeslots (studioday_id, category, level, venue, "startTime", "endTime", teacher) 
-//         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;`, 
-//         [studiodayId, category, level, studio, convertToMilitaryTime(startTime), convertToMilitaryTime(endTime), teacher]
-//       );
-  
-  
-  
-  
-  
-  
-  
-//       // a way to grab two ids 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-//       // Generate 
-//       if (isOvernight)
-//         await pool.query(`
-//           INSERT INTO overnightpairs ()
-//         `)
-  
-//       // FEATURE of assigning more than two teachers:
-//       // let studioscheduleId = studioscheduleResult.rows[0].id;
-//       // await pool.query(`
-//       //   INSERT INTO teacherassignments (studioschedule_id, teacher_id)
-//       //   SELECT $1, (SELECT id FROM teachers WHERE name = $2)`,
-//       //   [studioscheduleId, teacher]
-//       // );
-//     }
-// }
-  
-// router.post('/postNewClass', async (req, res) => {
-//     try { 
-//       // const {
-//       //     categoryRadio: category,
-//       //     levelRadio: level,
-//       //     studioTextbox: studio,
-//       //     teacherTextbox1: teacher,
-//       //     schedulesArray: schedulesArrays,    
-//       //     startTimeTextbox: startTime,
-//       //     endTimeTextbox: endTime,
-//       // } = req.body
-  
-//       const {
-//         // Re-naming for minor readability convenience
-//         schedulesArray: schedulesArrays,
-//         ...prop 
-//       } = req.body;
-//       await pool.query('BEGIN');
-//       if (schedulesArrays.length === 2) {
-//         await postNewClass({
-//           ...prop,
-//           schedulesArray: schedulesArrays[0],
-//           endTimeTextbox: '11:59 PM',
-//           isOvernight: true
-//         }); 
-//         await postNewClass({
-//           ...prop,
-//           schedulesArray: schedulesArrays[1],
-//           startTimeTextbox: '12:00 AM',
-//           isOvernight: true
-//         }) 
-//       } else if (schedulesArrays.length === 1) {
-//         await postNewClass({
-//           ...prop,
-//           schedulesArray: schedulesArrays[0],
-//           isOvernight: false
-//         })
-//       } else {
-//         throw new Error('Invalid schedulesArrays length')
-//       }
-  
-//       res.json('SUCCESSFUL POST!')
-      
-//       await pool.query('COMMIT');
-//     } 
-//     catch (err) {
-//       await pool.query('ROLLBACK');
-//       console.error(err);
-//     }
-// }); 
-  
 router.post('/postNewClass', async (req, res) => {
     try { 
       const {
-          category: category,
-          level: level,
-          studio: studio,
-          teacher: teacher,
-          schedulesArray: schedulesArrays,    
-          startTime: startTime,
-          endTime: endTime,
-          isOvernight: isOvernight,
+        category,
+        level,
+        studio,
+        teacher,
+        schedulesArrays,    
+        startTime,
+        endTime,
+        isOvernight,
       } = req.body
 
       let savedEndTime = endTime
@@ -295,8 +161,6 @@ router.post('/postNewClass', async (req, res) => {
             // if date already exists, do nothing
             // if date does not exists, insert and fetch new record's id
 
-            console.log('schedule', schedule)
-
             let studiodayResult = await pool.query(`
             INSERT INTO studiodays(date, day) 
             VALUES ($1, $2)
@@ -314,9 +178,6 @@ router.post('/postNewClass', async (req, res) => {
             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;`, 
             [studiodayId, category, level, studio, convertToMilitaryTime(adjustedStartTime), convertToMilitaryTime(adjustedEndTime), teacher]
             );
-            console.log('2')
-
-            // console.log('studioscheduleResult id:', studioscheduleResult.rows[0].id)
                 
             studioschedule_id = studioscheduleResult.rows[0].id;
             
@@ -334,15 +195,15 @@ router.post('/postNewClass', async (req, res) => {
                     studiotimeslot2_id = studioschedule_id
                     await pool.query(`
                     INSERT INTO overnightpairs (studiotimeslot1_id, studiotimeslot2_id)
-                    VALUES ($1, $2)`, 
+                    VALUES ($1, $2)`,
                     [studiotimeslot1_idArray[index], studiotimeslot2_id]
                     );
                 }
             }
         }
       }
-      
       await pool.query('COMMIT');
+      res.sendStatus(201);
     }
     catch (err) {
       await pool.query('ROLLBACK');
@@ -350,4 +211,4 @@ router.post('/postNewClass', async (req, res) => {
     }
 }); 
 
-  module.exports = router;
+module.exports = router;

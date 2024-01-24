@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { format, addDays } from 'date-fns';
 
-export default function ConfirmationFormsLayout({ formData, setFormData, isOvernight, setPhase, setSubmitIsClicked, setSelectedDates }){
+export default function ConfirmationFormsLayout({
+    formData,
+    setFormData, 
+    isOvernight, 
+    setPhase, 
+    setSubmitIsClicked, 
+    setSelectedDates 
+}){
     const [doesConflictExist, setDoesConflictExist] = useState(false);
     const [NoSuccessExist, setNoSuccessExist] = useState(false);
     const postData = async (pendingData) => {
@@ -70,39 +77,45 @@ export default function ConfirmationFormsLayout({ formData, setFormData, isOvern
         }
     }, []);
 
-    const handleSubmit = () => {
-        // Create an array with items that has value of SUCCESS
-        const successArray = formData.schedulesArray.filter(item => item.status === 'SUCCESS')
+    const handleSubmit = async () => {
+        try {
+            // Create an array with items that has value of SUCCESS
+            const successArray = formData.schedulesArray.filter(item => item.status === 'SUCCESS')
 
-        // Remove status property, it is no longer needed.
-        const reformedArray = successArray.map(item => {
-            delete item.status;
-            return item
-        })
+            // Remove status property, it is no longer needed.
+            const reformedArray = successArray.map(item => {
+                delete item.status;
+                return item
+            })
 
-        // Initialize a placeholder
-        let pendingArray = []
+            // Initialize a placeholder
+            let pendingArray = []
 
-        // Simplifies overnight detection, using length() function in /postNewClass
-        // If overnight, submit an array with two arrays
-        if (isOvernight) {
-            const reformedArray2 = reformedArray.map((schedule) => ({ 
-                date: format(addDays(new Date(schedule.date), 2), 'yyyy-MM-dd') 
-            }))
-            pendingArray = [reformedArray, reformedArray2]
-        } 
-        // If not, submit an array with one array
-        else {
-            pendingArray = [reformedArray];
+            // Simplifies overnight detection, using length() function in /postNewClass
+            // If overnight, submit an array with two arrays
+            if (isOvernight) {
+                const reformedArray2 = reformedArray.map((schedule) => ({ 
+                    date: format(addDays(new Date(schedule.date), 2), 'yyyy-MM-dd') 
+                }))
+                pendingArray = [reformedArray, reformedArray2]
+            } 
+            
+            // If not, submit an array with one array
+            else {
+                pendingArray = [reformedArray];
+            }
+
+            const pendingData = {
+                ...formData,
+                schedulesArray: pendingArray,
+                isOvernight: isOvernight
+            }
+
+            await postData(pendingData)
+        } catch (error) {
+            console.error(error)
+            throw(error)
         }
-
-        const pendingData = {
-            ...formData,
-            schedulesArray: pendingArray,
-            isOvernight: isOvernight
-        }
-
-        postData(pendingData)
         setSubmitIsClicked(true)
         setFormData({
             category: '',
@@ -184,7 +197,13 @@ export default function ConfirmationFormsLayout({ formData, setFormData, isOvern
                     </div> 
                 </div>
                 <div className="flex gap-4 mt-2 justify-end">
-                    <button className={`${NoSuccessExist ? 'bg-gray-500 text-gray-100' : 'bg-green-600 text-white'}  p-4 rounded`} onClick={() => handleSubmit()} disabled={NoSuccessExist}>SUBMIT</button>
+                    <button 
+                        className={`${NoSuccessExist ? 'bg-gray-500 text-gray-100' : 'bg-green-600 text-white'}  p-4 rounded`}
+                        onClick={() => handleSubmit()}
+                        disabled={NoSuccessExist}   
+                    >
+                        SUBMIT
+                    </button>
                 </div>
             </div> 
         </div>

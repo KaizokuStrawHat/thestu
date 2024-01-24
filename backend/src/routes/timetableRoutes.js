@@ -28,6 +28,7 @@ router.post('/fetchOneWeek', async (req, res) => {
         timeslots: timeslots
       });
     }
+    console.log('I fetched')
     res.json(weekSchedule);
   } catch (err) {
     console.error(err)
@@ -36,6 +37,7 @@ router.post('/fetchOneWeek', async (req, res) => {
 
 async function deleteTimeslotAndAssociatedData(deletingTimeslotId) {
   try {
+    console.log('deletingTimeslotId:', deletingTimeslotId)
     let deletingTimeslots_ids = [deletingTimeslotId]
 
     await pool.query('BEGIN');
@@ -54,8 +56,6 @@ async function deleteTimeslotAndAssociatedData(deletingTimeslotId) {
       let studiotimeslot1_id = pairs_results.rows[0].studiotimeslot1_id;
       let studiotimeslot2_id = pairs_results.rows[0].studiotimeslot2_id;
       let overnightpair_id = pairs_results.rows[0].id;
-
-      console.log('overnightpair_id:', overnightpair_id)
 
       await pool.query(`
         DELETE FROM overnightpairs WHERE id = $1`, 
@@ -101,7 +101,7 @@ router.delete('/deleteTimeslot/:timeslotId', async (req, res) => {
     deleteTimeslotAndAssociatedData(parseInt(req.params.timeslotId))
     res.status(200).send({ message: 'Timeslot and associated data deleted successfully.' });
   } catch (e) {
-    console.log(e)
+    console.error('Error:', e)
     res.status(500).send({ message: 'Error deleting timeslot.' });
   }
 });

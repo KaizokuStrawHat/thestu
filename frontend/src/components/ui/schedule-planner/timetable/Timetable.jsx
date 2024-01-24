@@ -25,6 +25,7 @@ export default function Timetable({setPhase, setCurrentDate, currentDate, submit
     let formattedDates = [];
 
     useEffect(() => {
+        console.log('It is I')
         if (isFirstRender.current) {
             isFirstRender.current = false
             return
@@ -43,6 +44,7 @@ export default function Timetable({setPhase, setCurrentDate, currentDate, submit
         const getTimeslots = async () => {
             try { 
                 let response = await axios.post('http://localhost:5000/timetable/fetchOneWeek', formattedDates) 
+                console.log('this is the response: ', response.data);
                 setWeekSchedule(response.data)
             } catch (error) {
                 console.error('Error: ', error) 
@@ -50,11 +52,7 @@ export default function Timetable({setPhase, setCurrentDate, currentDate, submit
         };
         
         getTimeslots();
-
         setDeleteIsClicked(false)
-        setSubmitIsClicked(false)
-
-        console.log('formattedDates:', formattedDates)
     }, [currentDate, deleteIsClicked, submitIsClicked])
 
     const calculatePositionAndSize = (startTime, endTime) => {
