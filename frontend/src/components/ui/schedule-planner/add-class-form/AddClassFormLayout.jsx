@@ -8,7 +8,7 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
     const didComponentMount = useRef(0) // In production, initialize this AND the useEffect condition to 1
     const [isStartTimeValid, setIsStartTimeValid] = useState(null)
     const [isEndTimeValid, setIsEndTimeValid] = useState(null)
-    const [isSameTime, setIsSameTime] = useState(null)
+    const [isSameTime, setIsSameTime] = useState(false)
     let startTimeFormatFlag = null
     let endTimeFormatFlag = null
     let hasError = null
@@ -60,13 +60,6 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
         }))
     }
 
-    useEffect(() => {
-        setIsSameTime(formData.startTime === formData.endTime)
-    }, [formData])
-    useEffect(() => {
-        console.log(isSameTime)
-    }, [isSameTime])
-
     function handleCancel(){
         setFormData({
             category: '',
@@ -88,11 +81,13 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
                 // Validating format to 'hh:mm a' to ensure convertMilitaryTime function in timetableRoutes.js works as intended
                 startTimeFormatFlag = validateTimeFormat(value)
                 setIsStartTimeValid(startTimeFormatFlag)
+                setIsSameTime(formData.startTime === formData.endTime)
             }
             else if (name === 'endTime') {
                 // Validating format to 'hh:mm a' to ensure convertMilitaryTime function in timetableRoutes.js works as intended
                 endTimeFormatFlag = validateTimeFormat(value)
                 setIsEndTimeValid(endTimeFormatFlag)
+                setIsSameTime(formData.startTime === formData.endTime)
             }
             setErrors(prevErrors => ({
                 ...prevErrors,
@@ -133,6 +128,7 @@ export default function AddClassFormLayout({setPhase, setFormData, formData, set
                             isStartTimeValid={isStartTimeValid}
                             isEndTimeValid={isEndTimeValid} 
                             formData={formData}
+                            isSameTime={isSameTime}
                             />
                     </div>
                 </div>

@@ -58,6 +58,8 @@ export default function ClassForm({handleChange, errors, isStartTimeValid, isEnd
                         <p className="text-red-500">Start time is required</p>
                     ) : (isStartTimeValid === false) ? (
                         <p className="text-red-500">Must use AM/PM format. (e.g '10:00 PM' or '12:00 AM')</p>
+                    ) : (isSameTime === true) ? (
+                        <p className="text-red-500">Invalid Time</p>
                     ) : (null)
                 }
             </label>
@@ -75,6 +77,8 @@ export default function ClassForm({handleChange, errors, isStartTimeValid, isEnd
                     <p className="text-red-500">End time is required</p>
                 ) : (isEndTimeValid === false) ? (
                     <p className="text-red-500">Must use AM/PM format. (e.g '10:00 PM' or '12:00 AM')</p>
+                ) : (isSameTime === true) ? (
+                    <p className="text-red-500">Invalid Time</p>
                 ) : (null)
             }
             </label>
@@ -89,9 +93,6 @@ export default function ClassForm({handleChange, errors, isStartTimeValid, isEnd
                 />
                 {errors.teacher && <p className="text-red-500">Teacher is required.</p>}
             </label>
-            { isSameTime &&
-                <p className="col-start-1 col-span-3 text-center text-red-500">Start</p>
-            }
         </>
     )
 }

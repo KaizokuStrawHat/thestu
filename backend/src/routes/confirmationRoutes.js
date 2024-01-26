@@ -131,7 +131,7 @@ router.post('/postNewClass', async (req, res) => {
         level,
         studio,
         teacher,
-        schedulesArrays,    
+        schedulesArray,    
         startTime,
         endTime,
         isOvernight,
@@ -146,21 +146,19 @@ router.post('/postNewClass', async (req, res) => {
 
       await pool.query('BEGIN')
 
-      for (const [iteration, schedulesArray] of schedulesArrays.entries()) {
-        
+      let iteration = 0;
+      for (subArray of schedulesArray) {
+        // When user inputs like 2:00 PM - 1:59 PM, each schedule will be split into two
         if (isOvernight && iteration === 0) {
           adjustedEndTime = '11:59 PM'
-        }
-  
-        else if (isOvernight && iteration === 1) {
+        } else if (isOvernight && iteration === 1) {
           adjustedStartTime = '12:00 AM'
           adjustedEndTime = savedEndTime
-        }
-        
-        for (const [index, schedule] of schedulesArray.entries()) {
+        };
+        let index = 0
+        for (schedule of subArray) {
             // if date already exists, do nothing
             // if date does not exists, insert and fetch new record's id
-
             let studiodayResult = await pool.query(`
             INSERT INTO studiodays(date, day) 
             VALUES ($1, $2)
@@ -189,23 +187,26 @@ router.post('/postNewClass', async (req, res) => {
             // );
 
             if (isOvernight) {
-                if (iteration === 0) {
-                    studiotimeslot1_idArray.push(studioschedule_id)
-                } else if (iteration === 1) {
-                    studiotimeslot2_id = studioschedule_id
-                    await pool.query(`
-                    INSERT INTO overnightpairs (studiotimeslot1_id, studiotimeslot2_id)
-                    VALUES ($1, $2)`,
-                    [studiotimeslot1_idArray[index], studiotimeslot2_id]
-                    );
-                }
+              if (iteration === 0) {
+                  studiotimeslot1_idArray.push(studioschedule_id)
+              } else if (iteration === 1) {
+                studiotimeslot2_id = studioschedule_id
+                  await pool.query(`
+                  INSERT INTO overnightpairs (studiotimeslot1_id, studiotimeslot2_id)
+                  VALUES ($1, $2)`,
+                  [studiotimeslot1_idArray[index], studiotimeslot2_id]
+                );
+              }
+              index++
             }
-        }
+        };
+        iteration++;
       }
+      
       await pool.query('COMMIT');
       res.sendStatus(201);
     }
-    catch (err) {
+    catch (err) { 
       await pool.query('ROLLBACK');
       console.error(err);
     }

@@ -28,7 +28,6 @@ router.post('/fetchOneWeek', async (req, res) => {
         timeslots: timeslots
       });
     }
-    console.log('I fetched')
     res.json(weekSchedule);
   } catch (err) {
     console.error(err)
@@ -37,7 +36,6 @@ router.post('/fetchOneWeek', async (req, res) => {
 
 async function deleteTimeslotAndAssociatedData(deletingTimeslotId) {
   try {
-    console.log('deletingTimeslotId:', deletingTimeslotId)
     let deletingTimeslots_ids = [deletingTimeslotId]
 
     await pool.query('BEGIN');
@@ -94,16 +92,24 @@ async function deleteTimeslotAndAssociatedData(deletingTimeslotId) {
     await pool.query('ROLLBACK');
     throw err;
   }
-}
+};
 
 router.delete('/deleteTimeslot/:timeslotId', async (req, res) => {
   try {
     deleteTimeslotAndAssociatedData(parseInt(req.params.timeslotId))
-    res.status(200).send({ message: 'Timeslot and associated data deleted successfully.' });
+    res.status(204).send({ message: 'Successful deletion'});
   } catch (e) {
     console.error('Error:', e)
     res.status(500).send({ message: 'Error deleting timeslot.' });
   }
+});
+
+router.get('/fetchStudios', async (req, res) => {
+  const StudioResult = await pool.query(`
+  SELECT DISTINCT venue from studiotimeslots;
+  `);
+  const studios = StudioResult.rows.map(item => item.venue);
+  res.json(studios);
 });
 
 module.exports = router;

@@ -7,7 +7,6 @@ import AddTeacherFormLayout from "../components/ui/schedule-planner/AddTeacherFo
 
 export default function TimetablePage(){        
   const [submitIsClicked, setSubmitIsClicked] = useState(false);
-  const [currentDate, setCurrentDate] = useState(new Date());
   const [phase, setPhase] = useState(0);
   const [selectedDates, setSelectedDates] = useState([]);
   const [isOvernight, setIsOvernight] = useState(false);
@@ -21,43 +20,13 @@ export default function TimetablePage(){
     teacher: ''
   });
 
-  // const [formData, setFormData] = useState({
-  //   category: "Drop-In",
-  //   level: "Advance",
-  //   startTime: "11:00 AM",
-  //   endTime: "12:00 PM",
-  //   studio: "Studio A",
-  //   teacher: "Teo",
-  //   schedulesArray: [
-  //     {
-  //         date: "2024-02-01",
-  //         status: ""
-  //     },
-  //     {
-  //         date: "2024-02-02",
-  //         status: ""
-  //     },
-  //     {
-  //         date: "2024-02-03",
-  //         status: ""
-  //     }
-  //   ]
-  // });
-
-  // useEffect(() => {
-  //   console.log(phase)
-  // }, [phase])
-
   return( 
       <>
         {(phase === 0 ) ? (
         <>
-          <Timetable 
-          currentDate={currentDate} 
-          setCurrentDate={setCurrentDate}
+          <Timetable
           setPhase={setPhase}
           submitIsClicked={submitIsClicked}
-          setSubmitIsClicked={setSubmitIsClicked}
           /> 
         </>
         ) : (phase === 1) ? (
