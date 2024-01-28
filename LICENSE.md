@@ -1,4 +1,4 @@
-# thestu License
+# THESTU License
 
 All rights reserved. This software and its associated documentation are the property of KaizokuStrawHat.
 
