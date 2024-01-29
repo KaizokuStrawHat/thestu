@@ -10,24 +10,34 @@ function getDayOfWeek(dateString) {
 
 router.post('/fetchOneWeek', async (req, res) => {
   try {
-    const datesArray = req.body
+    const {
+      currentStudio: studio,
+      formattedDates: datesArray
+    } = req.body;
+
     let weekSchedule = []
     await pool.query('BEGIN')
+    // For each date, retrieve existing schedules
+
     for (const date of datesArray) {
       let timeslotsResult = await pool.query(`
         SELECT * FROM studiotimeslots
-        WHERE studioday_id IN (SELECT id FROM studiodays WHERE date = $1);`,  
-        [date]
-      );  
+        WHERE studioday_id IN (SELECT id FROM studiodays WHERE date = $1)
+        AND venue = $2;`,  
+        [date, studio]
+      );
+
       let timeslots = [];
-      for (const timeslot of timeslotsResult.rows)
+      for (const timeslot of timeslotsResult.rows) {
         timeslots.push(timeslot);
+      }
+
       weekSchedule.push({
         date: date,
         day: getDayOfWeek(date),
         timeslots: timeslots
       });
-    }
+    };
     res.json(weekSchedule);
   } catch (err) {
     console.error(err)
@@ -50,7 +60,7 @@ async function deleteTimeslotAndAssociatedData(deletingTimeslotId) {
 
     // Check if pair exists
     if (pairs_results.rows.length !== 0) {
-      // Initialize
+      // Initialize studiotimeslot1_id, studiotimeslot2_id, overnightpair_id
       let studiotimeslot1_id = pairs_results.rows[0].studiotimeslot1_id;
       let studiotimeslot2_id = pairs_results.rows[0].studiotimeslot2_id;
       let overnightpair_id = pairs_results.rows[0].id;
@@ -86,7 +96,6 @@ async function deleteTimeslotAndAssociatedData(deletingTimeslotId) {
         [studioday_id]
       )
     }
-
     await pool.query('COMMIT');
   } catch (err) {
     await pool.query('ROLLBACK');
@@ -96,7 +105,7 @@ async function deleteTimeslotAndAssociatedData(deletingTimeslotId) {
 
 router.delete('/deleteTimeslot/:timeslotId', async (req, res) => {
   try {
-    deleteTimeslotAndAssociatedData(parseInt(req.params.timeslotId))
+    await deleteTimeslotAndAssociatedData(parseInt(req.params.timeslotId))
     res.status(204).send({ message: 'Successful deletion'});
   } catch (e) {
     console.error('Error:', e)

@@ -8,11 +8,10 @@ import WeekRangePicker from './WeekRangePicker';
 import StudioPicker from './StudioPicker';
 
 export default function Timetable({setPhase, submitIsClicked}){
-    
     const [currentDate, setCurrentDate] = useState(new Date());
     const [currentStudio, setCurrentStudio] = useState(null);
     const [weekSchedule, setWeekSchedule] = useState(false)
-    const [toggleDelete, setToggleDelete] = useState(false)
+    const [isDeleteToggled, setIsDeleteToggled] = useState(false)
     const [deleteIsClicked, setDeleteIsClicked] = useState(0)
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     const times = ['1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', 
@@ -24,36 +23,7 @@ export default function Timetable({setPhase, submitIsClicked}){
     ];
 
     const [dates, setDates] = useState([])
-    const isFirstRender = useRef(true)
     let formattedDates = [];
-
-    useEffect(() => {
-        if (isFirstRender.current) {
-            isFirstRender.current = false
-            return
-        }
-
-        let placeholder = [];
-
-        for (let i = 0; i <= 6; i++)
-        {   
-            formattedDates.push(format(addDays(startOfWeek(currentDate), i),'yyyy-MM-dd'))
-            placeholder.push(format(addDays(startOfWeek(currentDate), i),'MMM d'))
-            setDates(placeholder)   
-        };
-        
-        // Fetch schedules of one week
-        const getTimeslots = async () => {
-            try { 
-                const response = await axios.post('http://localhost:5000/timetable/fetchOneWeek', formattedDates)
-                setWeekSchedule(response.data)
-                console.log(`finish fetching:`, response.data)
-            } catch (error) {
-                console.error('Error: ', error) 
-            }
-        };
-        getTimeslots();
-    }, [currentDate, deleteIsClicked, submitIsClicked])
 
     const calculatePositionAndSize = (startTime, endTime) => {
         // Variables for calculations
@@ -72,14 +42,41 @@ export default function Timetable({setPhase, submitIsClicked}){
 
         return { size, position };
     };
+
+    useEffect(() => {
+        // Return if currentStudio has not initialize
+        if (!currentStudio)
+            return
+
+        let renderedDates = [];
+        for (let i = 0; i <= 6; i++)
+        {   
+            formattedDates.push(format(addDays(startOfWeek(currentDate), i),'yyyy-MM-dd'))
+            renderedDates.push(format(addDays(startOfWeek(currentDate), i),'MMM d'))
+            setDates(renderedDates)       
+        };
+        
+        // Fetch schedules of one week
+        const getTimeslots = async () => {
+            try { 
+                const response = await axios.post('http://localhost:5000/timetable/fetchOneWeek', {formattedDates, currentStudio})
+                setWeekSchedule(response.data)
+                console.log(`fetch response`, response.data)
+            } catch (error) {
+                console.error('Error: ', error) 
+            }
+        };
+        getTimeslots();
+        console.log('3')
+    }, [currentDate, deleteIsClicked, submitIsClicked, currentStudio])
     
-    const handleDelete = () => {
-        setToggleDelete(!toggleDelete)
+    const handleDeleteToggle = () => {
+        setIsDeleteToggled(!isDeleteToggled)
     }
 
     const handleClick = async (timeslotId) => {
         const response = await axios.delete(`http://localhost:5000/timetable/deleteTimeslot/${timeslotId}`);
-        console.log(`finish deleting`);
+        console.log(`delete response:`, response.data);
         // To re-render the changes
         setDeleteIsClicked(deleteIsClicked + 1)
     };
@@ -94,7 +91,7 @@ export default function Timetable({setPhase, submitIsClicked}){
                 </div>
                 <div className="flex items-right justify-end gap-2 w-[30%]">
                     <button className="bg-green-500 rounded p-2 text-white w-[9.7%]" onClick={() => setPhase(1)}>Create</button>
-                    <button className="bg-red-500 rounded p-2 text-white w-[9.7%]" onClick={() => handleDelete()}> {toggleDelete ? 'X' : 'Delete'} </button>
+                    <button className="bg-red-500 rounded p-2 text-white w-[9.7%]" onClick={() => handleDeleteToggle()}> {isDeleteToggled ? 'X' : 'Delete'} </button>
                     {/* <button className="bg-blue-400 rounded p-2 text-white"> Filter </button>
                     <button className="bg-gray-300 rounded p-2 text-white" onClick={() => setPhase(4)}> Settings </button> */}
                 </div>
@@ -134,7 +131,7 @@ export default function Timetable({setPhase, submitIsClicked}){
                                         position={position}
                                         id={timeslot.id}
                                         handleClick={handleClick}
-                                        toggleDelete={toggleDelete}
+                                        isDeleteToggled={isDeleteToggled}
                                     />
                                     );
                                 })

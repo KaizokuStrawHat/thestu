@@ -17,38 +17,34 @@ export default function StudioPicker({currentStudio, setCurrentStudio}) {
     }, [])
 
     const rightHandleClick = () => {
-        setIndex(index + 1)
+        // Prevents index from going over array's length
         if (studios.length === index + 1) {
             setIndex(0)
-        } 
+        } else{
+            setIndex(index + 1)
+        }
     }
 
     const leftHandleClick = () => {
-        setIndex(index - 1)
-        console.log('studios.length:', studios.length)
-        console.log('index:', index)
-
-        /* 
-            if index became negative
-
-        */
-
-
+        // Prevents index from going negative
         if (index - 1 < 0) {
             setIndex(studios.length - 1)
+        } else {
+            setIndex(index - 1)
         }
     }
 
     useEffect(() => {
-        console.log('current index:', index)
-    }, [index])
+        if (studios)
+        setCurrentStudio(studios[index])
+    }, [studios, index])
 
     return(
         <div className="flex justify-center gap-2">
-            {hasMounted && studios ? (
+            {hasMounted && currentStudio ? (
                 <>
                     <button onClick={() => leftHandleClick()}>&lt;</button>
-                    <button className="text-center">{studios[index]}</button>
+                    <button className="text-center">{currentStudio}</button>
                     <button onClick={() => rightHandleClick()}>&gt;</button>
                 </>
             ) : (
