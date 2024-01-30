@@ -106,7 +106,7 @@ async function deleteTimeslotAndAssociatedData(deletingTimeslotId) {
 router.delete('/deleteTimeslot/:timeslotId', async (req, res) => {
   try {
     await deleteTimeslotAndAssociatedData(parseInt(req.params.timeslotId))
-    res.status(204).send({ message: 'Successful deletion'});
+    res.status(204).send();
   } catch (e) {
     console.error('Error:', e)
     res.status(500).send({ message: 'Error deleting timeslot.' });

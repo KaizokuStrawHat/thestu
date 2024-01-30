@@ -26,7 +26,6 @@ export default function ConfirmationFormsLayout({
     useEffect(() => {
         const validateDates = async (data) => {
             try {
-
                 const validatedSchedules = await axios.post('http://localhost:5000/confirmation/checkTimeConflict', data);
                 console.log('validatedSchedules: ', validatedSchedules)
                 // Sorting
@@ -55,7 +54,7 @@ export default function ConfirmationFormsLayout({
                 }
             } catch (error) {
                 console.error('Error:', error);
-                // setNoSuccessExist(true);
+                setNoSuccessExist(true);
             };
         };
 
@@ -68,7 +67,10 @@ export default function ConfirmationFormsLayout({
                 ...formData,
                 startTime: '12:00 AM',
                 schedulesArray: formData.schedulesArray.map((schedule, index) => {
-                    return { date: format(addDays(new Date(schedule.date), 2), 'yyyy-MM-dd')}
+                    return { 
+                        date: format(addDays(new Date(schedule.date), 2), 'yyyy-MM-dd'), 
+                        status: ''
+                    }
                 })
             }
             validateDates([modifiedFormData, modifiedFormData2]);

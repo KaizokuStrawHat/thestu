@@ -20,108 +20,124 @@ function getDayOfWeek(dateString) {
 }  
 
 function mergeOvernightArrays(schedulesArray) {
-    let placeholder = []
-    let status = ''
-    // Ensures that both arrays are same length to proceed
-    if (schedulesArray[0].length === schedulesArray[1].length) {
-      for (let i = 0; i < schedulesArray[0].length; i++) {
-        if (schedulesArray[0][i].status === 'CONFLICT' || schedulesArray[1][i].status === 'CONFLICT')
-          status = 'CONFLICT'
-        else
-          status = 'SUCCESS'
-        placeholder.push({
-          date: schedulesArray[0][i].date,
-          status: status
-        })
-      }
-    } else
-        throw new Error('mergeOvernightArrays ERROR: schedulesArray should have same length')
-    return placeholder
+  let placeholder = [];
+  let status = '';
+
+  // Both arrays have same length 
+  // Ensures schedulesArray is an overnight array
+  if (schedulesArray[0].length === schedulesArray[1].length) {
+    for (let i = 0; i < schedulesArray[0].length; i++) {
+      if (schedulesArray[0][i].status === 'CONFLICT' || schedulesArray[1][i].status === 'CONFLICT')
+        status = 'CONFLICT'
+      else
+        status = 'SUCCESS'
+      placeholder.push({
+        date: schedulesArray[0][i].date,
+        status: status
+      })
+    }
+  } else
+      throw new Error('mergeOvernightArrays ERROR: schedulesArray should have same length')
+  return placeholder
+} 
+
+function stringFormat(input) {
+  return input.toLowerCase().replace(/(?:^|\s)\w/g, (match) => {
+    return match.toUpperCase();
+  });
 }
 
-// Takes the start time, end time, and schedules
-// Returns schedules objects with new value property
-async function checkTimeConflict(schedulesArray, startTime, endTime){   
-    const conflictsPromises = schedulesArray.map( async (schedule, iteration) => {
-      // Grab a studiotimeslots record with only id, startTime, endTime with the same date
-      let timeslots = await pool.query(`
-        SELECT id, "startTime", "endTime" FROM studiotimeslots
-        WHERE studioday_id IN (SELECT id FROM studiodays WHERE date = $1);`,  
-        [schedule.date]
-      );  
+async function checkTimeConflict(schedulesArray, startTime, endTime, venue){ 
+  // For each schedule within schedulesArray:
+  const conflictsPromises = schedulesArray.map( async (schedule, iteration) => {
+    // Grab a studiotimeslots with the same date as request
+    let timeslots = await pool.query(`
+      SELECT id, "startTime", "endTime", venue FROM studiotimeslots
+      WHERE studioday_id IN (SELECT id FROM studiodays WHERE date = $1);`,  
+      [schedule.date]
+    );  
 
-      // If no timeslots exist on the same date, no conflict
-      if (timeslots.rows.length === 0){
-        console.log('Timeslots not found, returning success')
+    // If no timeslots exist on the request's date, return SUCCESS
+    if (timeslots.rows.length === 0){
+      return {
+        ...schedule,
+        status: 'SUCCESS'
+      }
+    }
+
+    // Convert into military time format with integer as data type
+    let PendingStartTime = convertToMilitaryTime(startTime)
+    let PendingEndTime = convertToMilitaryTime(endTime)
+
+    // For each timeslots in the same date, check time conflict
+    let conflictDetected = false;
+    for (let timeslot of timeslots.rows) {
+      // If the fetched timeslot and pending timeslot do not have the same venue, return SUCCESS
+      if (stringFormat(timeslot.venue) !== stringFormat(venue)){
         return {
           ...schedule,
           status: 'SUCCESS'
         }
       }
-  
-      // Converting into military time integer data type and renaming the variable
-      let PendingStartTime = convertToMilitaryTime(startTime)
-      let PendingEndTime = convertToMilitaryTime(endTime)
-  
-      // For each timeslots in the same date, check time conflict
-      let conflictDetected = false;
-      for (let timeslot of timeslots.rows) {
-        let ExistingTimeslotStart = timeslot.startTime;
-        let ExistingTimeslotEnd = timeslot.endTime;
-        if (ExistingTimeslotStart <= PendingEndTime && PendingStartTime <= ExistingTimeslotEnd) {
-          console.log(`TIME CONFLICT DETECTED: REQUEST with ${schedule.date} AND WITH EXISTING TIMESLOT ID${timeslot.id}`)
-          conflictDetected = true;
-          break;
-        }
+
+      
+      let ExistingTimeslotStart = timeslot.startTime;
+      let ExistingTimeslotEnd = timeslot.endTime;
+      if (ExistingTimeslotStart <= PendingEndTime && PendingStartTime <= ExistingTimeslotEnd) {
+        console.log(`TIME CONFLICT DETECTED: REQUEST with ${schedule.date} AND WITH EXISTING TIMESLOT ID${timeslot.id}`)
+        conflictDetected = true;
+        break;
       }
-  
-      if (conflictDetected) {
-        return {
-          ...schedule,
-          status: 'CONFLICT'
-        }
-      } else {
-        return {
-          ...schedule,
-          status: 'SUCCESS'
-        }
+    }
+
+    if (conflictDetected) {
+      return {
+        ...schedule,
+        status: 'CONFLICT'
       }
-    })
-    return Promise.all(conflictsPromises);
+    } else {
+      return {
+        ...schedule,
+        status: 'SUCCESS'
+      }
+    }
+  })
+  return Promise.all(conflictsPromises);
 }
   
 router.post('/checkTimeConflict', async (req, res) => {
-    try {
-        // The req.body has to be always an array, in order to check if the schedule is overnight
-        const formArray = req.body;
+  try {
+    // The req.body has to be always an array, in order to check if the schedule is overnight
+    const formArray = req.body;
 
-        let promises = formArray.map(async (form) => {
-            const { 
-                schedulesArray, 
-                startTime, 
-                endTime
-            } = form;
-            return await checkTimeConflict(schedulesArray, startTime, endTime);
-        });
+    let promises = formArray.map(async (form) => {
+        const { 
+            schedulesArray, 
+            startTime, 
+            endTime,
+            studio: venue
+        } = form;
+        return await checkTimeConflict(schedulesArray, startTime, endTime, venue);
+    });
 
-        Promise.all(promises).then(placeholder => {
-            // If non-overnight
-            if (placeholder.length === 1) {
-            res.json(placeholder.flat())
-            }
-            // If overnight
-            else if (placeholder.length === 2) {
-            let result = mergeOvernightArrays(placeholder)
-            res.json(result)
-            } else
-            throw new Error ('Placeholder desired length is not attained')
-        }).catch(error => {
-            console.error("An error occurred: ", error);
-        });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('An error occurred');
-    }  
+    Promise.all(promises).then(placeholder => {
+      // If non-overnight, remove outer array 
+      if (placeholder.length === 1) {
+        res.json(placeholder.flat())
+      }
+      // If overnight, keep outer array
+      else if (placeholder.length === 2) {
+        let result = mergeOvernightArrays(placeholder)
+        res.json(result)
+      } else
+      throw new Error ('Placeholder desired length is not attained')
+    }).catch(error => {
+        console.error("An error occurred: ", error);
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+  }  
 })
   
 router.post('/postNewClass', async (req, res) => {
