@@ -20,6 +20,10 @@ server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });         
 
+server.get('/checkServerStatus', async (req, res) => {
+    res.sendStatus(200)
+})
+
 /*
 
 drop-in:

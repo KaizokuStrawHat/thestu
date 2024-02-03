@@ -2,23 +2,24 @@ import { React, useState } from 'react';
 import { startOfMonth, setISODay, addMonths, subMonths, addWeeks, format } from 'date-fns';
 import DateButton from './DateButton';
 
-export default function Calendar({selectedDates, setSelectedDates, setPhase, formData, setFormData}){
+export default function Calendar({selectedDates, setSelectedDates, setPhase, setFormData}){
+
+    console.log('this is selectedDates:', selectedDates)
+
     const [date, setDate] = useState(new Date());
     const firstDate = startOfMonth(date);
     const days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fri', 'Sat'];
     const datesArray = [];  
 
-    for (let i = 0; i <= 5; i++)
-    {
-        for (let z = 0; z <= 6; z++)
-        {   
+    for (let i = 0; i <= 5; i++){
+        for (let z = 0; z <= 6; z++){   
             datesArray.push({
                 dateID: format(setISODay(addWeeks(firstDate, i), z), 'yyyy-MM-dd'),
                 dateString: format(setISODay(addWeeks(firstDate, i), z), 'd'),
                 isActive: selectedDates.includes(format(setISODay(addWeeks(firstDate, i), z), 'yyyy-MM-dd')),
                 isCurrentMonth: setISODay(addWeeks(firstDate, i), z).getMonth() === date.getMonth()
-            })
-        }
+            });
+        };
     };
     
     const handleDateClick = (buttonID) => {
@@ -32,12 +33,12 @@ export default function Calendar({selectedDates, setSelectedDates, setPhase, for
     };
 
     const handleUpButton = () => {
-        setDate(addMonths(date, 1))
-    }
+        setDate(addMonths(date, 1));
+    };
     
     const handleDownButton = () => {
-        setDate(subMonths(date, 1))
-    }
+        setDate(subMonths(date, 1));
+    };
 
     const handleConfirmClick = () => {
         setSelectedDates(prevSelectedDates => {

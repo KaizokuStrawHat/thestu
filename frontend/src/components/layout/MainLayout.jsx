@@ -4,28 +4,40 @@ import NavigationDrawer from "../ui/NavigationDrawer"
 import Logo from "../Logo"
 import Header from "./Header"
 
-export default function MainLayout({isViewPortBelow864}){
+export default function MainLayout(){
     return(
-        <>  
-            {isViewPortBelow864 ? (
-                // Mobile
-                <>
-                    <Header>
-                        <Logo/>
-                    </Header>
-                    <Outlet />
-                    <NavigationDrawer/>
-                </>
-            ): (
-                // PC
-                <>
-                    <Header>
-                        <Logo/>
-                        <NavigationLayout />
-                    </Header>
-                    <Outlet />
-                </>
-            )}
+        <>
+            <Header>
+                <Logo/>
+                <NavigationLayout />
+            </Header>
+            <Outlet />
         </>
     )
 }
+
+// export default function MainLayout({isViewPortBelow864}){
+//     return(
+//         <>  
+//             {isViewPortBelow864 ? (
+//                 // Mobile
+//                 <>
+//                     <Header>
+//                         <Logo/>
+//                     </Header>
+//                     <Outlet />
+//                     <NavigationDrawer/>
+//                 </>
+//             ): (
+//                 // PC
+//                 <>
+//                     <Header>
+//                         <Logo/>
+//                         <NavigationLayout />
+//                     </Header>
+//                     <Outlet />
+//                 </>
+//             )}
+//         </>
+//     )
+// }

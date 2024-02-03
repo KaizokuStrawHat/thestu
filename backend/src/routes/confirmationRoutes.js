@@ -69,7 +69,7 @@ async function checkTimeConflict(schedulesArray, startTime, endTime, venue){
     let PendingStartTime = convertToMilitaryTime(startTime)
     let PendingEndTime = convertToMilitaryTime(endTime)
 
-    // For each timeslots in the same date, check time conflict
+    // For each timeslots with the same date, check time conflict
     let conflictDetected = false;
     for (let timeslot of timeslots.rows) {
       // If the fetched timeslot and pending timeslot do not have the same venue, return SUCCESS
@@ -83,6 +83,7 @@ async function checkTimeConflict(schedulesArray, startTime, endTime, venue){
       
       let ExistingTimeslotStart = timeslot.startTime;
       let ExistingTimeslotEnd = timeslot.endTime;
+      
       if (ExistingTimeslotStart <= PendingEndTime && PendingStartTime <= ExistingTimeslotEnd) {
         console.log(`TIME CONFLICT DETECTED: REQUEST with ${schedule.date} AND WITH EXISTING TIMESLOT ID${timeslot.id}`)
         conflictDetected = true;

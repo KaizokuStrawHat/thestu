@@ -11,12 +11,12 @@ export default function NavigationLayout(){
                 <NavLink name={'MERCH'} route={'/merch'}/>
                 <NavLink name={'TIMETABLE'} route={'/timetable'}/> */}
 
-                <NavLink name={'HOME'} />
+                <NavLink name={'HOME'} route={'/'}/>
                 <NavLink name={'SCHEDULE'} />
                 <NavLink name={'FACULTY'} />
                 <NavLink name={'CONTACT'} />
                 <NavLink name={'MERCH'} />
-                <NavLink name={'TIMETABLE'} />
+                <NavLink name={'TIMETABLE'} route={'/timetable'}/>
             </div>
         </>
     )

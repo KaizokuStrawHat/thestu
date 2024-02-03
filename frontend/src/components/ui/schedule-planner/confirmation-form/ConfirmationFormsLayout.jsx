@@ -8,7 +8,8 @@ export default function ConfirmationFormsLayout({
     isOvernight, 
     setPhase, 
     setSubmitIsClicked, 
-    setSelectedDates 
+    setSelectedDates,
+    phase
 }){
     const [doesConflictExist, setDoesConflictExist] = useState(false);
     const [NoSuccessExist, setNoSuccessExist] = useState(false);

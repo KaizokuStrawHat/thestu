@@ -1,8 +1,6 @@
 import {React, useState} from 'react';
 import axios from 'axios';
 
-// What is your availability?
-
 export default function AddTeacherFormLayout(){
  
     const [formData, setFormData] = useState({

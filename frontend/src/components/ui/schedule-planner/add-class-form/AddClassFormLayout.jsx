@@ -1,8 +1,9 @@
 import ClassForm from "./ClassForm";
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { format, parse } from 'date-fns';
 
 export default function AddClassFormLayout({setPhase, setFormData, formData, setSelectedDates, setIsOvernight}){
+
     const [errors, setErrors] = useState({});
     const [canSubmit, setCanSubmit] = useState(false)
     const didComponentMount = useRef(0) // In production, initialize this AND the useEffect condition to 1

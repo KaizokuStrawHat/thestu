@@ -1,5 +1,5 @@
 import '../../../../index.css';
-import { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef} from 'react';
 import Column from './Column'
 import Timeblock from "./Timeblock";
 import { startOfWeek, format, addDays } from 'date-fns';
@@ -8,11 +8,28 @@ import WeekRangePicker from './WeekRangePicker';
 import StudioPicker from './StudioPicker';
 
 export default function Timetable({setPhase, submitIsClicked}){
-    const [currentDate, setCurrentDate] = useState(new Date());
-    const [currentStudio, setCurrentStudio] = useState(null);
-    const [weekSchedule, setWeekSchedule] = useState(false)
-    const [isDeleteToggled, setIsDeleteToggled] = useState(false)
-    const [deleteIsClicked, setDeleteIsClicked] = useState(0)
+    type timeslotType = {
+        id: number;
+        studioday_id: number;
+        category: string;
+        startTime: number;
+        endTime: number;
+        level: string;
+        venue: string;
+        teacher: string
+    }
+
+    type weekScheduleType = {
+        date: string;
+        day: Date;
+        timeslots: timeslotType[]
+    }
+
+    const [currentDate, setCurrentDate] = useState<Date>(new Date());
+    const [currentStudio, setCurrentStudio] = useState<null | string[]>(null);
+    const [weekSchedule, setWeekSchedule] = useState<null | weekScheduleType[]>(null)
+    const [isDeleteToggled, setIsDeleteToggled] = useState<boolean>(false)
+    const [deleteIsClicked, setDeleteIsClicked] = useState<number>(0)
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     const times = ['1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', 
     '5:00 AM', '6:00 AM', '7:00 AM', '8:00 AM',
@@ -22,9 +39,8 @@ export default function Timetable({setPhase, submitIsClicked}){
     '9:00 PM', '10:00 PM', '11:00 PM', '12:00 AM',
     ];
 
-    const [dates, setDates] = useState([])
-    let formattedDates = [];
-
+    const [dates, setDates] = useState<any[]>([])
+    
     const calculatePositionAndSize = (startTime, endTime) => {
         // Variables for calculations
         const pixelsPerHour = 80;  // For example, if each hour is represented by 80 pixels
@@ -44,30 +60,24 @@ export default function Timetable({setPhase, submitIsClicked}){
     };
 
     useEffect(() => {
-        // Return if currentStudio has not initialize
-        if (!currentStudio)
-            return
-
-        let renderedDates = [];
-        for (let i = 0; i <= 6; i++)
-        {   
-            formattedDates.push(format(addDays(startOfWeek(currentDate), i),'yyyy-MM-dd'))
-            renderedDates.push(format(addDays(startOfWeek(currentDate), i),'MMM d'))
-            setDates(renderedDates)       
+        let renderedDates: string[] = [];
+        let formattedDates: string[] = [];
+        for (let i = 0; i <= 6; i++){
+            formattedDates.push(format(addDays(startOfWeek(currentDate), i),'yyyy-MM-dd'));
+            renderedDates.push(format(addDays(startOfWeek(currentDate), i),'MMM d'));
+            setDates(renderedDates);
         };
         
         // Fetch schedules of one week
         const getTimeslots = async () => {
             try { 
-                const response = await axios.post('http://localhost:5000/timetable/fetchOneWeek', {formattedDates, currentStudio})
-                setWeekSchedule(response.data)
-                console.log(`fetch response`, response.data)
+                const response = await axios.post('http://localhost:5000/timetable/fetchOneWeek', {formattedDates, currentStudio});
+                setWeekSchedule(response.data);
             } catch (error) {
-                console.error('Error: ', error) 
+                console.error('Error: ', error);
             }
         };
         getTimeslots();
-        console.log('3')
     }, [currentDate, deleteIsClicked, submitIsClicked, currentStudio])
     
     const handleDeleteToggle = () => {
@@ -81,13 +91,22 @@ export default function Timetable({setPhase, submitIsClicked}){
         setDeleteIsClicked(deleteIsClicked + 1)
     };
 
+    
+        
+    
+    // {
+    //     date: date,
+    //     day: getDayOfWeek(date),
+    //     timeslots: timeslots
+    // }
+
     return( 
         <>
             <div className="flex mt-2 w-[93.25%]">
                 <div className="w-[39.5%]"></div>
                 <div className="w-[35.5%]">
                     <WeekRangePicker currentDate={currentDate} setCurrentDate={setCurrentDate}/>
-                    <StudioPicker currentStudio={currentStudio} setCurrentStudio={setCurrentStudio}/>
+                    <StudioPicker currentStudio={currentStudio} deleteIsClicked={deleteIsClicked} setCurrentStudio={setCurrentStudio}/>
                 </div>
                 <div className="flex items-right justify-end gap-2 w-[30%]">
                     <button className="bg-green-500 rounded p-2 text-white w-[9.7%]" onClick={() => setPhase(1)}>Create</button>
@@ -114,7 +133,6 @@ export default function Timetable({setPhase, submitIsClicked}){
                     {weekSchedule &&
                     // Ensure weekSchedule is initialized and mapped properly
                     weekSchedule.map((schedule, i) => (
-                        // Consider a more stable key if possible
                         <div key={i} className="border-l-2 border-r-2 h-20 relative"> 
                             <Column>
                                 {// Use optional chaining to timeslots only once the values has been initialized
