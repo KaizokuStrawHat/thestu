@@ -13,7 +13,7 @@ import RegisterDropIn from './pages/registerDropIn.jsx';
 import RegisterPrograms from './pages/registerPrograms.jsx';
 import Faculty from './pages/Faculty.jsx';
 import Contact from './pages/Contact.jsx';
-import Merch from './pages/Merch.jsx';
+import MerchPage from './pages/MerchPage.jsx';
 import Register from './pages/Register.jsx';
 import Error404 from './pages/Error404.jsx';
 import Error505 from './pages/Error505.jsx';
@@ -62,6 +62,7 @@ export default function App() {
         <Routes >
           <Route path="/" element={<MainLayout />}>
             <Route path="timetable" element={<TimetablePage />} />
+            <Route path="merch" element={<MerchPage />} />
             <Route path="error505" element={<Error505 />} />
           </Route>
         </Routes>
