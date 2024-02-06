@@ -11,8 +11,15 @@ export default function ConfirmationFormsLayout({
     setSelectedDates,
     phase
 }){
-    const [doesConflictExist, setDoesConflictExist] = useState(false);
-    const [NoSuccessExist, setNoSuccessExist] = useState(false);
+    type ScheduleObject = {
+        date: string;
+        status: string;
+    }
+
+    type DateArray = string[]
+
+    const [doesConflictExist, setDoesConflictExist] = useState<boolean>(false);
+    const [NoSuccessExist, setNoSuccessExist] = useState<boolean>(false);
     const postData = async (pendingData) => {
         try {
             console.log('This is what you are trying to submit: ', pendingData)
@@ -82,24 +89,21 @@ export default function ConfirmationFormsLayout({
 
     const handleSubmit = async () => {
         try {
-            // Create an array with items that has value of SUCCESS
-            const successArray = formData.schedulesArray.filter(item => item.status === 'SUCCESS')
+            // Re-create an array with items that has value of SUCCESS
+            const successArray: ScheduleObject[] = formData.schedulesArray.filter(item => item.status === 'SUCCESS')
 
-            // Remove status property, it is no longer needed.
-            const reformedArray = successArray.map(item => {
-                delete item.status;
-                return item
-            })
+            // Re-create an array without the status property
+            const reformedArray: DateArray = successArray.map(({ status, date }) => date);
 
             // Initialize a placeholder
-            let pendingArray = []
+            let pendingArray: DateArray[] = []
 
-            // Simplifies overnight detection, using length() function in /postNewClass
+            // Simplifies overnight detection, passing pendingArray to be able to do length() function in /postNewClass (length will either give 1 or 2)
             // If overnight, submit an array with two arrays
             if (isOvernight) {
-                const reformedArray2 = reformedArray.map((schedule) => ({ 
-                    date: format(addDays(new Date(schedule.date), 2), 'yyyy-MM-dd') 
-                }))
+                const reformedArray2: DateArray = reformedArray.map((date) => ( 
+                    format(addDays(new Date(date), 2), 'yyyy-MM-dd') 
+                ))
                 pendingArray = [reformedArray, reformedArray2]
             } 
             

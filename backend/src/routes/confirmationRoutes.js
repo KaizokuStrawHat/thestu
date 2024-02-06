@@ -173,7 +173,7 @@ router.post('/postNewClass', async (req, res) => {
           adjustedEndTime = savedEndTime
         };
         let index = 0
-        for (schedule of subArray) {
+        for (date of subArray) {
             // if date already exists, do nothing
             // if date does not exists, insert and fetch new record's id
             let studiodayResult = await pool.query(`
@@ -182,7 +182,7 @@ router.post('/postNewClass', async (req, res) => {
             ON CONFLICT (date) 
             DO UPDATE SET date = EXCLUDED.date
             RETURNING id`,
-            [schedule.date, getDayOfWeek(schedule.date)]
+            [date, getDayOfWeek(date)]
             );
 
             let studiodayId = studiodayResult.rows[0].id;

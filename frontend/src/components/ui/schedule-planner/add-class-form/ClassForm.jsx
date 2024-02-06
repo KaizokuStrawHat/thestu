@@ -52,8 +52,7 @@ export default function ClassForm({handleChange, errors, isStartTimeValid, isEnd
                     className={`border p-4 rounded w-26 flex items-center space-x-4 text-black ${errors.startTime ? 'border-red-500' : ''}`}
                     onChange={handleChange}
                     value={formData.startTime}
-                />
-                {
+                />{
                     (errors.startTime) ? (
                         <p className="text-red-500">Start time is required</p>
                     ) : (isStartTimeValid === false) ? (
