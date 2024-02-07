@@ -1,9 +1,9 @@
 import React, {useState, useEffect, useContext} from "react";
-import AddClassFormLayout from "../components/ui/schedule-planner/add-class-form/AddClassFormLayout";
-import Timetable from "../components/ui/schedule-planner/timetable/Timetable";
-import Calendar from "../components/ui/schedule-planner/calendar/Calendar";
-import ConfirmationFormsLayout from "../components/ui/schedule-planner/confirmation-form/ConfirmationFormsLayout";
-import AddTeacherFormLayout from "../components/ui/schedule-planner/AddTeacherFormLayout";
+import AddClassFormLayout from "../components/timetable/add-class-form/AddClassFormLayout";
+import Timetable from "../components/timetable/timetable/Timetable";
+import Calendar from "../components/timetable/calendar/Calendar";
+import ConfirmationFormsLayout from "../components/timetable/confirmation-form/ConfirmationFormsLayout";
+import AddTeacherFormLayout from "../components/timetable/timetable/AddTeacherFormLayout";
 import useServerStatus from "../hooks/useServerStatus";
 
 export default function TimetablePage(){        

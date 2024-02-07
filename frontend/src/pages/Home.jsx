@@ -1,5 +1,4 @@
 import React from "react";
-import JoinButton from "../components/ui/JoinButton";
 
 export default function Home(){
     return(
@@ -10,21 +9,8 @@ export default function Home(){
                 <h2 className='text-center whitespace-nowrap'> A place you can call home. </h2>
             </div>
             <div className="flex justify-center items-center gap-10">
-                <JoinButton/>
                 <button>Why Dance?</button>
             </div>
         </div>
     )
 }
-// PC VERSION:
-// LOGO -- NAV LINKS -- DROPDOWN BUTTONS
-// Introduction
-// Front Page News
-
-// MOBILE VERSION:
-// LOGO
-// Introduction
-// Front Page News
-// Navigation Drawer
-
-// has front page carousel -- hot news -- celebrities drop ins, events, etc

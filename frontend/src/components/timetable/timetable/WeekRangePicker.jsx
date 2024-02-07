@@ -3,12 +3,12 @@ import { addWeeks, subWeeks, getISOWeek, getISOWeekYear, getWeek } from 'date-fn
 
 export default function WeekRangePicker({currentDate, setCurrentDate}){
 
-    const [dateString, setDateString] = useState<string>('')
+    const [dateString, setDateString] = useState('')
 
     useEffect(() => {
         // Formatting currentDate to 'Year XXXX, Week XX'
-        let formattedISOWeek: number = getISOWeek(currentDate);
-        let formattedISOYear: number = getISOWeekYear(currentDate);
+        let formattedISOWeek = getISOWeek(currentDate);
+        let formattedISOYear = getISOWeekYear(currentDate);
         setDateString(`Year ${formattedISOYear}, Week ${formattedISOWeek} `)
     }, [currentDate])
     

@@ -19,7 +19,7 @@ import Error404 from './pages/Error404.jsx';
 import Error505 from './pages/Error505.jsx';
 import MainLayout from './components/layout/MainLayout.jsx';
 import Schedule from './pages/Schedule.jsx';
-import TimetablePage from './pages/TimetablePage.tsx';
+import TimetablePage from './pages/TimetablePage.jsx';
 import FrontPage from './pages/FrontPage.jsx';
 import {
   ServerStatusContext, 

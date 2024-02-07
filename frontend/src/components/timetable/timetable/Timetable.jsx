@@ -1,4 +1,4 @@
-import '../../../../index.css';
+import '../../../../src/index.css';
 import React, { useEffect, useState, useRef} from 'react';
 import Column from './Column'
 import Timeblock from "./Timeblock";
