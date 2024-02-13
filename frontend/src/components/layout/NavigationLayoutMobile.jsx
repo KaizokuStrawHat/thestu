@@ -1,10 +1,10 @@
-import '../../index.css';
+import '../../styles/index.css'
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 // use <NavigationLayout /> since you want each pages to have this navigation menu
 
-export default function NavigationDrawerLayout({isOpen}) {
+export default function NavigationLayoutMobile({isOpen}) {
 
   /*
   const LayoutClassName = clsx('', {
@@ -13,7 +13,7 @@ export default function NavigationDrawerLayout({isOpen}) {
   });
   */
   return (
-  <div className='flex flex-col fixed inset-0 bg-red-400 items-center gap-30 w-screen h-screen px-10 py-5 gap-2'>
+  <div className='flex flex-col fixed inset-0 bg-yellow-700 text-white items-center gap-16 w-screen h-screen px-10 py-5'>
     <Link to='/'> HOME </Link>
     <Link> SCHEDULE </Link>
     <Link> FACULTY </Link>

@@ -1,4 +1,4 @@
-import '../index.css';
+import '../styles/index.css'
 import logo from '../assets/the-stu-logo.png';
 
 export default function Logo(){

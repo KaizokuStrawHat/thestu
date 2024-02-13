@@ -1,5 +1,5 @@
 import React from "react";
-import '../../index.css';
+import '../../styles/index.css'
 import ScheduleTimeSlotCard from "./ScheduleSlotCard";
 import { v4 as uuidv4 } from 'uuid';
 

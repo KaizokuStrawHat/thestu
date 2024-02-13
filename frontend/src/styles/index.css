@@ -1,7 +1,13 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import './custom.css';
 /* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap'); */
+
+#root {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
 
 .timetable {
     display: grid;
@@ -11,6 +17,14 @@
     width: 100%;
     height: 1600px;
     background-color: #D1FAE5;
+}
+
+.merch-content-grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: min-content;
 }
 
 /*

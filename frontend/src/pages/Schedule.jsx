@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ScheduleDayCard from "../components/ui/ScheduleDayCard";
-import '../index.css';
+import '../styles/index.css';
 
 export default function Schedule(){
 
