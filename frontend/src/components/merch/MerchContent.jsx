@@ -15,7 +15,7 @@ import Accessories from './content/Accessories'
 
 export default function MerchContent ({NavigationValue}) {
     return(
-    <div className="merch-content-grid min-[600px]:grid-cols-4 overflow-hidden gap-x-8 gap-y-12 pb-60 pt-10">
+    <div className="merch-content-grid min-[750px]:grid-cols-4 overflow-hidden gap-x-8 gap-y-12 pb-60 pt-10 pl-10 pr-10">
         {(NavigationValue === 0) ? (
             <HotPicks />
         ) : (NavigationValue === 1) ? (

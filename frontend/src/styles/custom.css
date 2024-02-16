@@ -1,9 +1,0 @@
-@layer utilities {
-    .grid-cols-auto {
-        grid-template-columns: auto;
-    }
-
-    .grid-rows-auto {
-        grid-template-rows: auto;
-    }
-}

@@ -1,9 +1,10 @@
 const express = require('express');
 const cors = require('cors')
-const scheduleRoutes = require('./src/routes/scheduleRoutes.js')
-const dashboardRoutes = require('./src/routes/dashboardRoutes.js')
-const timetableRoutes = require('./src/routes/timetableRoutes.js')
-const confirmationRoutes = require('./src/routes/confirmationRoutes.js')
+const scheduleRoutes = require('./src/routes/timetable/scheduleRoutes.js')
+const dashboardRoutes = require('./src/routes/timetable/dashboardRoutes.js')
+const timetableRoutes = require('./src/routes/timetable/timetableRoutes.js')
+const confirmationRoutes = require('./src/routes/timetable/confirmationRoutes.js')
+const ItemPageRoutes = require('./src/routes/merch/itemPageRoutes.js')
 
 const server = express();
 server.use(cors());
@@ -13,6 +14,7 @@ server.use('/schedule', scheduleRoutes);
 server.use('/dashboard', dashboardRoutes);
 server.use('/timetable', timetableRoutes);
 server.use('/confirmation', confirmationRoutes);
+server.use('/merch', ItemPageRoutes);
 
 const PORT = 5000;
 
@@ -23,41 +25,3 @@ server.listen(PORT, () => {
 server.get('/checkServerStatus', async (req, res) => {
     res.sendStatus(200)
 })
-
-/*
-
-drop-in:
-{ 
-    levelRadio: level,
-    dateStartTextbox: date, 
-    startTimeTextbox: time_start,
-    endTimeTextbox: time_end,
-    studioTextbox: venue,
-    teacherTextbox1: teacher, 
-    recurrenceTextbox: recurrence, 
-    dateEndTextbox: date_end
-}
-
-program:
-{ 
-    levelRadio: level,
-    dateStartTextbox: date,
-    dateEndTextbox: date_end,
-    recurrenceTextbox: recurrence, 
-    startTimeTextbox: time_start,
-    endTimeTextbox: time_end,
-    studioTextbox: venue,
-    teacherTextbox1: teacher
-}
-
-workshop:
-{ 
-    dateStartTextbox: date, 
-    dateEndTextbox: date_end,
-    studioTextbox: venue,
-    workshopClass: [
-	    {same drop-in object}
-    ]
-} 
-
-*/

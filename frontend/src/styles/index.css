@@ -1,8 +1,8 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-@import './custom.css';
 /* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap'); */
+
 
 #root {
     overflow-x: hidden;
@@ -32,4 +32,16 @@
 !! img size
 !! border
 !! rearrange the styles in code to avoid confusion	
+*/
+
+/*
+@layer utilities {
+    .grid-cols-auto {
+        grid-template-columns: auto;
+    }
+
+    .grid-rows-auto {
+        grid-template-rows: auto;
+    }
+}
 */

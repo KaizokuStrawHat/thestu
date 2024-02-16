@@ -25,8 +25,14 @@ import {
   ServerStatusContext, 
   ServerStatusProvider
 } from './contexts/ServerStatusContext.jsx';
+import {
+  QueryClient,
+  QueryClientProvider
+} from '@tanstack/react-query'
+import ItemPage from './pages/ItemPage.jsx';
 
 export default function App() {
+  const queryClient = new QueryClient();
   const [isViewPortBelow864, setIsViewPortBelow864] = useState(false);
   useEffect(() => {
     const handleResize = () => {
@@ -57,15 +63,18 @@ export default function App() {
         </Route>
       </Routes> 
       */}
+      <QueryClientProvider client={queryClient}>
       <ServerStatusProvider>
         <Routes >
           <Route path="/" element={<MainLayout isViewPortBelow864={isViewPortBelow864}/>}>
             <Route path="timetable" element={<TimetablePage />} />
             <Route path="merch" element={<MerchPage />} />
+            <Route path="merch/item/:id" element={<ItemPage />}/>
             <Route path="error505" element={<Error505 />} />
           </Route>
         </Routes>
       </ServerStatusProvider>
+      </QueryClientProvider>
     </>
   );
-};
+};  
