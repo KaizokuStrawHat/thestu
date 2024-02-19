@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 export default function NavigationLayout(){
     return(
         <>
-            <div className="flex max-[845px]:flex-col justify-center w-[800px] gap-12 ml-3 text-white text-lg text-center">  
+            <div className="flex justify-center w-[800px] gap-12 ml-3 text-white text-lg text-center">  
                 {/* <NavLink name={'HOME'} route={'/home'} />
                 <NavLink name={'SCHEDULE'} route={'/schedule'}/>
                 <NavLink name={'FACULTY'} route={'/faculty'}/>
