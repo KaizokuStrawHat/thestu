@@ -6,149 +6,133 @@ import hotpick5 from '../../../assets/hotpick5.jpg'
 import hotpick6 from '../../../assets/hotpick6.jpg'
 import hotpick7 from '../../../assets/hotpick7.jpg'
 import hotpick8 from '../../../assets/hotpick8.jpg'
-import Item from '../common/Item'
+import hotpick9 from '../../../assets/hotpick9.jpg'
+import hotpick10 from '../../../assets/hotpick10.jpg'
+import MerchItem from '../common/MerchItem'
 import React from 'react';
 
 export default function HotPicks(){
-    // const ITEMS = [
-    //     {
-    //         id: '',
-    //         name: "Plain Hoodie",
-    //         varieties: [
-    //             {
-    //                 color: '#ffdd59',
-    //                 picture: '',
-    //                 price: 28.99,
-    //                 sale_percentage: 20
-    //             }, 
-    //             {
-    //                 color: '#ffdd59',
-    //                 picture: '',
-    //                 price: 34.99,
-    //                 sale_percentage: 20
-    //             }
-    //         ]
-    //     },
-    //     {
-    //         id: '',
-    //         name: "Zip-up Jacket",
-    //         varieties: [
-    //             {
-    //                 color: '#f2dd59',
-    //                 picture: '',
-    //                 price: 43.99,
-    //                 sale_percentage: 30
-    //             }, 
-    //             {
-    //                 color: '#f44d59',
-    //                 picture: '',
-    //                 price: 34.99,
-    //                 sale_percentage: 30
-    //             }
-    //         ]
-    //     }
-    // ]
 
     const ItemCollection = [
         {
+            id: 'THESTU001',
             name: 'Plain Hoodie',
-            choices: [
+            varieties: [
                 {
+                    id: 'THESTU001-YELLOW',
                     price: 34.99,
                     picture: hotpick1,
                     color: '#ffdd59',
+                    sizes: [
+                        'XS', 'S', 'M'
+                    ]
                 }, 
                 {
+                    id: 'THESTU001-WHITE',
                     price: 26.99,
                     picture: hotpick6,
                     color: '#e9efef',
+                    sizes: [
+                        'M', 'L', 'XL'
+                    ]
+                },
+                {
+                    id: 'THESTU001-BLACK',
+                    price: 39.99,
+                    picture: hotpick8,
+                    color: '#2f251b',
+                    sizes: [
+                        'M', 'L'
+                    ]
                 }
             ]
         },
         {
+            id: 'THESTU002',
             name: 'Graphic Hoodie',
-            choices: [
+            varieties: [
                 {
                     price: 59.99,
                     picture: hotpick2,
                     color: '#e5d4da'
                 }
             ]
+        },
+        {
+            id: 'THESTU003',
+            name: 'Leather Jacket',
+            varieties: [
+                {
+                    price: 79.99,
+                    picture: hotpick3,
+                    color: '#c4cbd1'
+                }
+            ]
+        },
+        {
+            id: 'THESTU004',
+            name: 'Graphic Hoodie',
+            varieties: [
+                {
+                    price: 59.99,
+                    picture: hotpick4,
+                    color: 'black'
+                }
+            ]
+        },
+        {
+            id: 'THESTU005',
+            name: 'Graphic Hoodie',
+            varieties: [
+                {
+                    price: 59.99,
+                    picture: hotpick5,
+                    color: 'black'
+                }
+            ]
+        },
+        {
+            id: 'THESTU006',
+            name: 'Graphic Hoodie',
+            varieties: [
+                {
+                    price: 59.99,
+                    picture: hotpick7,
+                    color: 'black'
+                }
+            ]
+        },
+        {
+            id: 'THESTU007',
+            name: 'Graphic Hoodie',
+            varieties: [
+                {
+                    price: 59.99,
+                    picture: hotpick9,
+                    color: 'black'
+                }
+            ]
+        },
+        {
+            id: 'THESTU008',
+            name: 'Graphic Hoodie',
+            varieties: [
+                {
+                    price: 59.99,
+                    picture: hotpick10,
+                    color: 'black'
+                }
+            ]
         }
     ]
-    
+     
     return(
         <>
             {ItemCollection.map((item, index) => (
                 <React.Fragment key={index}>
-                    <Item name={item.name} choices={item.choices}/>
+                    <MerchItem name={item.name} varieties={item.varieties} id={item.id}/>
                 </React.Fragment>
             ))}
-            <div className='flex flex-col items-center whitespace-nowrap'>
-                <img className="bg-blue-200" src={hotpick3} alt='Hotpick 3' />
-                <p className='text-md font-semibold'>Leather Jacket</p>
-                <p className='text-md'>$59.99</p>
-                <div className='flex gap-2 mt-2'>
-                    <div className='w-6 h-6 rounded-full bg-slate-600 border-4 border-gray-200'></div>
-                    <div className='w-6 h-6 rounded-full bg-yellow-600 border-4 border-gray-200'></div>
-                </div>
-            </div>
-            <div className='flex flex-col flex-wrap items-center whitespace-nowrap'>
-                <img className="bg-blue-200" src={hotpick4} alt='Hotpick 4' />
-                <p className='text-md font-semibold'>Graphic Hoodie</p>
-                <p className='text-md'>$59.99</p>
-                <div className='flex gap-2 mt-2'>
-                    <div className='w-6 h-6 rounded-full bg-slate-600 border-4 border-gray-200'></div>
-                    <div className='w-6 h-6 rounded-full bg-yellow-600 border-4 border-gray-200'></div>
-                </div>
-            </div>
-
-            <div className='flex flex-col flex-wrap items-center whitespace-nowrap'>
-                <img className="bg-blue-200" src={hotpick5} alt='Hotpick 5' />
-                <p className='text-md font-semibold'>Graphic Hoodie</p>
-                <p className='text-md'>$59.99</p>
-                <div className='flex gap-2 mt-2'>
-                    <div className='w-6 h-6 rounded-full bg-slate-600 border-4 border-gray-200'></div>
-                    <div className='w-6 h-6 rounded-full bg-yellow-600 border-4 border-gray-200'></div>
-                </div>
-            </div>
-            <div className='flex flex-col flex-wrap items-center whitespace-nowrap'>
-                <img className="bg-blue-200" src={hotpick6} alt='Hotpick 6' />
-                <p className='text-md font-semibold'>Graphic Hoodie</p>
-                <p className='text-md'>$59.99</p>
-                <div className='flex gap-2 mt-2'>
-                    <div className='w-6 h-6 rounded-full bg-slate-600 border-4 border-gray-200'></div>
-                    <div className='w-6 h-6 rounded-full bg-yellow-600 border-4 border-gray-200'></div>
-                </div>
-            </div>
-            <div className='flex flex-col flex-wrap items-center whitespace-nowrap'>
-                <img className="bg-blue-200" src={hotpick7} alt='Hotpick 7' />
-                <p className='text-md font-semibold'>Graphic Hoodie</p>
-                <p className='text-md'>$59.99</p>
-                <div className='flex gap-2 mt-2'>
-                    <div className='w-6 h-6 rounded-full bg-slate-600 border-4 border-gray-200'></div>
-                    <div className='w-6 h-6 rounded-full bg-yellow-600 border-4 border-gray-200'></div>
-                </div>
-            </div>
-            <div className='flex flex-col flex-wrap items-center whitespace-nowrap'>
-                <img className="bg-blue-200" src={hotpick8} alt='Hotpick 8' />
-                <p className='text-md font-semibold'>Graphic Hoodie</p>
-                <p className='text-md'>$59.99</p>
-                <div className='flex gap-2 mt-2'>
-                    <div className='w-6 h-6 rounded-full bg-slate-600 border-4 border-gray-200'></div>
-                    <div className='w-6 h-6 rounded-full bg-yellow-600 border-4 border-gray-200'></div>
-                </div>
-            </div>
         </>
     )
 }
-
-// merch card component properties:
-// link to the collection page
-// id
-// name
-// price
-// out of stock
-// sizes
-// color1_picture
-// color2_picture

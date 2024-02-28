@@ -4,7 +4,8 @@ import axios from 'axios';
 export const ServerStatusContext = createContext();
 
 export const ServerStatusProvider = ({ children }) => {
-  console.log('in ServerStatusContext.jsx')
+  // console.log('in ServerStatusContext.jsx')
+  
   const [isServerRunning, setIsServerRunning] = useState(null);
 
   useEffect(() => {

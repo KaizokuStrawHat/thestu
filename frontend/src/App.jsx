@@ -13,7 +13,8 @@ import RegisterDropIn from './pages/registerDropIn.jsx';
 import RegisterPrograms from './pages/registerPrograms.jsx';
 import Faculty from './pages/Faculty.jsx';
 import Contact from './pages/Contact.jsx';
-import MerchPage from './pages/MerchPage.jsx';
+import MerchLandingPage from './pages/MerchLandingPage.jsx';
+import MerchHomePage from './pages/MerchHomePage.jsx';
 import Register from './pages/Register.jsx';
 import Error404 from './pages/Error404.jsx';
 import Error505 from './pages/Error505.jsx';
@@ -30,6 +31,7 @@ import {
   QueryClientProvider
 } from '@tanstack/react-query'
 import ItemPage from './pages/ItemPage.jsx';
+
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -65,10 +67,12 @@ export default function App() {
       */}
       <QueryClientProvider client={queryClient}>
       <ServerStatusProvider>
-        <Routes >
+        <Routes>
           <Route path="/" element={<MainLayout isViewPortBelow864={isViewPortBelow864}/>}>
             <Route path="timetable" element={<TimetablePage />} />
-            <Route path="merch" element={<MerchPage />} />
+            <Route path="merch" element={<MerchLandingPage />} />
+            <Route path="merch/homepage-men" element ={<MerchHomePage />} />
+            <Route path="merch/homepage-women" element ={<MerchHomePage />} />
             <Route path="merch/item/:id" element={<ItemPage />}/>
             <Route path="error505" element={<Error505 />} />
           </Route>

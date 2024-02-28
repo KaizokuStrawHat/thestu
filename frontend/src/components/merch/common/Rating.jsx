@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import StarRatings from 'react-star-ratings';
 import '../../../styles/index.css'
   
-export default function FiveStarsRating() {
+export default function Rating() {
     return(
         <div className='mb-2'>
             <StarRatings

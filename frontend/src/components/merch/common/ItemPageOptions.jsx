@@ -1,17 +1,42 @@
-export default function ItemPageOptions(){
+import React, { useEffect } from 'react';
+import { Size } from './Size';
+import ColorButtons from './ColorButtons';
+
+export default function ItemPageOptions({colors, selectedVariety, setSelectedColor, setImageValue, sizes, sizeValue, setSizeValue}){
+    useEffect(() => {
+        setImageValue(selectedVariety.picture)
+    }, [selectedVariety])
+
     return(
         <>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
                 <div className='flex gap-2 mt-2'>
-                    <button className='w-8 h-8 rounded-full bg-slate-600 border-4 border-gray-200'></button>
-                    <button className='w-8 h-8 rounded-full bg-yellow-600 border-4 border-gray-200'></button>
+                {colors.map((color, index) => (
+                    <React.Fragment key={index}>
+                        <input 
+                        type="radio"
+                        id={`choice-${index}`}
+                        name="colorChoice"
+                        value={color}
+                        className="hidden"
+                        onChange={() => {
+                            setSelectedColor(color)
+                        }}
+                        checked={selectedVariety.color === color}
+                        />
+                        <label 
+                        htmlFor={`choice-${index}`}
+                        className={`w-6 h-6 rounded-full border-2 cursor-pointer`}
+                        style={{
+                            backgroundColor: color, 
+                            borderColor: selectedVariety.color === color ? '#b3b3b3' : 'white',
+                            boxShadow: selectedVariety.color === color ? `0 0 0 2px ${color}` : ''
+                        }}
+                        />
+                    </React.Fragment>))}
                 </div>
-                <div className='inline-flex gap-2 mt-2'>
-                    <button className='w-8 h-8 rounded-full border-4 border-gray-200 text-sm flex justify-center items-center'>S</button>
-                    <button className='w-8 h-8 rounded-full border-4 border-gray-200 text-sm flex justify-center items-center'>M</button>
-                </div>
+                <Size sizes={sizes} sizeValue={sizeValue} setSizeValue={setSizeValue} />
             </div>
         </>
-        
-    )
+    ) 
 }
