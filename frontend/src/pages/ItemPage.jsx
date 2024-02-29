@@ -41,7 +41,7 @@ export default function ItemPage(){
 //  Fetching useNavigation values from MerchItem.jsx
     const location = useLocation();
     const { id, name, varieties, userColor} = location.state || {};
-    
+
 //  Managing useNavigation values from MerchItem.jsx
     const colors = varieties.map(variety => variety.color)
 
@@ -60,10 +60,21 @@ export default function ItemPage(){
 //
     const [ImageValue, setImageValue] = useState(selectedVariety.picture);   
 //
-
-    useEffect(() => {
-        console.log('selectedVariety:', selectedVariety)
-    }, [selectedVariety])
+    const [cartItems, setCartItems] = useState([])
+    function addToCart(){
+        setCartItems(cartItems => [
+            ...cartItems,
+            {
+                itemId: selectedVariety.id,
+                picture: selectedVariety.picture,
+                price: selectedVariety.price,
+                colorName: selectedVariety.colorName, 
+                name: name,
+                size: sizeValue, 
+                quantity: quantity
+            }
+        ]);
+    }
 
     /*
         ItemPageDetails.jsx:
@@ -88,10 +99,6 @@ export default function ItemPage(){
         
         We need to pass ImageValue, price, size, color, quantity to shopping cart
     */
-
-    
-    // const pendingCartValue =
-    // const Cart = []
 
     return (
         <div>
@@ -126,14 +133,7 @@ export default function ItemPage(){
                         quantity={quantity} 
                         setQuantity={setQuantity}
                         />
-                        <button onClick={() => console.log(
-                            {
-                                itemId: id,
-                                color: selectedColor, 
-                                size: sizeValue, 
-                                quantity: quantity, 
-                            }
-                        )}>Add to Cart</button>
+                        <ShoppingCartButton cartItems={cartItems} addToCart={addToCart}/>
                     </div>
                 </div>
             </div>

@@ -23,6 +23,7 @@ export default function HotPicks(){
                     price: 34.99,
                     picture: hotpick1,
                     color: '#ffdd59',
+                    colorName: 'Yellow',
                     sizes: [
                         'XS', 'S', 'M'
                     ]
@@ -32,6 +33,7 @@ export default function HotPicks(){
                     price: 26.99,
                     picture: hotpick6,
                     color: '#e9efef',
+                    colorName: 'White',
                     sizes: [
                         'M', 'L', 'XL'
                     ]
@@ -41,6 +43,7 @@ export default function HotPicks(){
                     price: 39.99,
                     picture: hotpick8,
                     color: '#2f251b',
+                    colorName: 'Black',
                     sizes: [
                         'M', 'L'
                     ]
