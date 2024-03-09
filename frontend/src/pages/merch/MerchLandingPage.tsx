@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import MerchHeader from "../components/merch/MerchHeader"
-import MerchFooter from "../components/merch/MerchFooter"
-import MerchNavigation from "../components/merch/MerchNavigation";
-import MerchContent from "../components/merch/MerchContent";
+import MerchHeader from "../../components/merch/MerchHeader"
+import MerchFooter from "../../components/merch/MerchFooter"
+import MerchNavigation from "../../components/merch/MerchNavigation";
+import MerchContent from "../../components/merch/MerchContent";
 
 export default function MerchLandingPage(){
 

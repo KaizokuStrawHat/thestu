@@ -9,12 +9,12 @@ import {
   Navigate
 } from "react-router-dom";
 import Home from './pages/Home.jsx';
-import RegisterDropIn from './pages/registerDropIn.jsx';
-import RegisterPrograms from './pages/registerPrograms.jsx';
+// import RegisterDropIn from './pages/registerDropIn.jsx';
+// import RegisterPrograms from './pages/registerPrograms.jsx';
 import Faculty from './pages/Faculty.jsx';
 import Contact from './pages/Contact.jsx';
-import MerchLandingPage from './pages/MerchLandingPage.jsx';
-import MerchHomePage from './pages/MerchHomePage.jsx';
+import MerchLandingPage from './pages/merch/MerchLandingPage.tsx';
+import MerchHomePage from './pages/merch/MerchHomePage.tsx';
 import Register from './pages/Register.jsx';
 import Error404 from './pages/Error404.jsx';
 import Error505 from './pages/Error505.jsx';

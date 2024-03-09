@@ -1,6 +1,6 @@
-import MerchContent from "../components/merch/MerchContent";
-import MerchNavigation from "../components/merch/MerchNavigation";
-import MerchHeader from "../components/merch/MerchHeader";
+import MerchContent from "../../components/merch/MerchContent";
+import MerchNavigation from "../../components/merch/MerchNavigation";
+import MerchHeader from "../../components/merch/MerchHeader";
 import { useState } from "react"
 
 export default function MerchHomePage(){
