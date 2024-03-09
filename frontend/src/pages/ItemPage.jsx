@@ -40,14 +40,14 @@ function checkItemInventory() {
 export default function ItemPage(){
 //  Fetching useNavigation values from MerchItem.jsx
     const location = useLocation();
-    const { id, name, varieties, userColor} = location.state || {};
-
+    const { id, itemName, varieties, userColor} = location.state || {};
+    
 //  Managing useNavigation values from MerchItem.jsx
-    const colors = varieties.map(variety => variety.color)
+    const colors = varieties.map(variety => variety.color);
 
 //
     const [selectedColor, setSelectedColor] = useState(userColor);
-    const [sizeValue, setSizeValue] = useState("")
+    const [sizeValue, setSizeValue] = useState("");
     const [quantity, setQuantity] = useState(1);
     const selectedVariety = varieties.filter(variety => variety.color === selectedColor)[0];
     /*
@@ -58,9 +58,10 @@ export default function ItemPage(){
         }
     */
 //
-    const [ImageValue, setImageValue] = useState(selectedVariety.picture);   
+    const [imageValue, setImageValue] = useState(selectedVariety.picture);   
 //
-    const [cartItems, setCartItems] = useState([])
+    const [cartItems, setCartItems] = useState([]);
+
     function addToCart(){
         setCartItems(cartItems => [
             ...cartItems,
@@ -69,12 +70,12 @@ export default function ItemPage(){
                 picture: selectedVariety.picture,
                 price: selectedVariety.price,
                 colorName: selectedVariety.colorName, 
-                name: name,
+                itemName: itemName,
                 size: sizeValue, 
                 quantity: quantity
             }
         ]);
-    }
+    };
 
     /*
         ItemPageDetails.jsx:
@@ -103,13 +104,13 @@ export default function ItemPage(){
     return (
         <div>
             <div className="pt-10 px-10 pb-6 md:flex xl:w-[1280px] xl:h-[904px] ml-[auto] mr-[auto]">
-                <img src={ImageValue} className="h-[60%] self-center md:w-[50%] md:pr-6 xl:h-[100%]" alt={`${ImageValue.color} Item`} />
+                <img src={imageValue} className="h-[60%] self-center md:w-[50%] md:pr-6 xl:h-[100%]" alt={`${imageValue.color} Item`} />
                 <div className="flex flex-col md:w-[50%] mt-2 justify-between">
                     <div>
                         <Rating />
                         {/* <Star fill="black" color="black"/> */}
                         <ItemPageDetails 
-                            name={name} 
+                            itemName={itemName} 
                             selectedVariety={selectedVariety}   
                         />
                         <ItemPageOptions 
@@ -126,7 +127,6 @@ export default function ItemPage(){
                         <ItemPageInfoLinks />     
                         <GalleryElements 
                         varieties={varieties} 
-                        ImageValue={ImageValue} 
                         setImageValue={setImageValue}
                         />
                         <QuantityButton 

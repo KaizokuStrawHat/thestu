@@ -66,18 +66,18 @@ export default function App() {
       </Routes> 
       */}
       <QueryClientProvider client={queryClient}>
-      <ServerStatusProvider>
-        <Routes>
-          <Route path="/" element={<MainLayout isViewPortBelow864={isViewPortBelow864}/>}>
-            <Route path="timetable" element={<TimetablePage />} />
-            <Route path="merch" element={<MerchLandingPage />} />
-            <Route path="merch/homepage-men" element ={<MerchHomePage />} />
-            <Route path="merch/homepage-women" element ={<MerchHomePage />} />
-            <Route path="merch/item/:id" element={<ItemPage />}/>
-            <Route path="error505" element={<Error505 />} />
-          </Route>
-        </Routes>
-      </ServerStatusProvider>
+        <ServerStatusProvider>
+          <Routes>
+            <Route path="/" element={<MainLayout isViewPortBelow864={isViewPortBelow864}/>}>
+              <Route path="timetable" element={<TimetablePage />} />
+              <Route path="merch" element={<MerchLandingPage />} />
+              <Route path="merch/homepage-men" element ={<MerchHomePage />} />
+              <Route path="merch/homepage-women" element ={<MerchHomePage />} />
+              <Route path="merch/item/:id" element={<ItemPage />}/>
+              <Route path="error505" element={<Error505 />} />
+            </Route>
+          </Routes>
+        </ServerStatusProvider>
       </QueryClientProvider>
     </>
   );

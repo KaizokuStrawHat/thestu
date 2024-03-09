@@ -7,11 +7,6 @@ import Sweater from './content/Sweater'
 import Shirt from './content/Shirt'
 import PoloShirt from './content/PoloShirt'
 import Accessories from './content/Accessories'
-    
-// NevStudio is saying at 767px, 
-// we change the layout
-// and we change the size of pictures
-
 
 export default function MerchContent ({NavigationValue}) {
     return(

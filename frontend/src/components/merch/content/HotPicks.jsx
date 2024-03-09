@@ -16,7 +16,7 @@ export default function HotPicks(){
     const ItemCollection = [
         {
             id: 'THESTU001',
-            name: 'Plain Hoodie',
+            itemName: 'Plain Hoodie',
             varieties: [
                 {
                     id: 'THESTU001-YELLOW',
@@ -52,7 +52,7 @@ export default function HotPicks(){
         },
         {
             id: 'THESTU002',
-            name: 'Graphic Hoodie',
+            itemName: 'Graphic Hoodie',
             varieties: [
                 {
                     price: 59.99,
@@ -63,7 +63,7 @@ export default function HotPicks(){
         },
         {
             id: 'THESTU003',
-            name: 'Leather Jacket',
+            itemName: 'Leather Jacket',
             varieties: [
                 {
                     price: 79.99,
@@ -74,7 +74,7 @@ export default function HotPicks(){
         },
         {
             id: 'THESTU004',
-            name: 'Graphic Hoodie',
+            itemName: 'Graphic Hoodie',
             varieties: [
                 {
                     price: 59.99,
@@ -85,7 +85,7 @@ export default function HotPicks(){
         },
         {
             id: 'THESTU005',
-            name: 'Graphic Hoodie',
+            itemName: 'Graphic Hoodie',
             varieties: [
                 {
                     price: 59.99,
@@ -96,7 +96,7 @@ export default function HotPicks(){
         },
         {
             id: 'THESTU006',
-            name: 'Graphic Hoodie',
+            itemName: 'Graphic Hoodie',
             varieties: [
                 {
                     price: 59.99,
@@ -107,7 +107,7 @@ export default function HotPicks(){
         },
         {
             id: 'THESTU007',
-            name: 'Graphic Hoodie',
+            itemName: 'Graphic Hoodie',
             varieties: [
                 {
                     price: 59.99,
@@ -118,7 +118,7 @@ export default function HotPicks(){
         },
         {
             id: 'THESTU008',
-            name: 'Graphic Hoodie',
+            itemName: 'Graphic Hoodie',
             varieties: [
                 {
                     price: 59.99,
@@ -133,7 +133,7 @@ export default function HotPicks(){
         <>
             {ItemCollection.map((item, index) => (
                 <React.Fragment key={index}>
-                    <MerchItem name={item.name} varieties={item.varieties} id={item.id}/>
+                    <MerchItem itemName={item.itemName} varieties={item.varieties} id={item.id}/>
                 </React.Fragment>
             ))}
         </>

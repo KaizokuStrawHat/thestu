@@ -23,7 +23,7 @@ export default function ShoppingCartButton({cartItems, addToCart}){
     return(
         <Dialog> 
             <DialogTrigger asChild>
-                <ShoppingCart className="w-full bg-blue-400 rounded h-12 mt-4" onClick={addToCart}/>
+                <ShoppingCart className="w-full h-12 p-2 bg-blue-400 rounded  mt-4" onClick={addToCart}/>
             </DialogTrigger>
             <DialogContent  className="flex flex-col w-[320px] h-full fixed left-[90.85%] bg-white p-0 gap-0">
                 <DialogTitle className="pt-4 pl-4 pr-4">Your Shopping Cart</DialogTitle>

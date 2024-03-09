@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ColorButtons from './ColorButtons';
 
-export default function MerchItem({name, varieties, id}){
+export default function MerchItem({itemName, varieties, id}){
   const [selectedColor, setSelectedColor] = useState(varieties[0].color)
 
 // 
@@ -13,7 +13,7 @@ export default function MerchItem({name, varieties, id}){
     navigate(`/merch/item/${id}`, { 
       state: { 
         id: id,
-        name: name,
+        itemName: itemName,
         userColor: selectedColor,
         varieties: varieties,
       } 
@@ -31,7 +31,7 @@ export default function MerchItem({name, varieties, id}){
             <button onClick={goToItemPage}>
               <img src={variation.picture} alt={`Hotpick ${index + 1}`} />
             </button>
-            <p className='font-semibold'>{name}</p>
+            <p className='font-semibold'>{itemName}</p>
             <p className='text-md font-semibold'>${variation.price}</p>
           </React.Fragment>
         ))}

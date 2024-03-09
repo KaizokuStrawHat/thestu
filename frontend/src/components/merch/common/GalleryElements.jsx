@@ -1,4 +1,4 @@
-export default function GalleryElements({varieties, GalleryValue, setImageValue}){
+export default function GalleryElements({varieties, setImageValue}){
     function renderGalleryElements(varieties) {
         const pictures = varieties.map(item => item.picture)
         
