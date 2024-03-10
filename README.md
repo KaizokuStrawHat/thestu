@@ -1,5 +1,5 @@
 A web app that will contain multiple components:  
 timetable (in progress)  
-dashboard (planned)  
+dashboard (in progress)  
 staff registration (planned)  
 e-commerce (planned)  
